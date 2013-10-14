@@ -54,9 +54,6 @@ as early as the work of Lindahl \cite{lindahl1976mdr} and
 studied more recently by several authors
 \cite{mosher2006ifr, roberts2011ser, roberts2012ksi}.
 
-%----------------------------------------------------------------------------%
-\subsubsection{Neutron Balance in a Node}
-
 Suppose the global problem 
 of Eq. \ref{eq:global} is defined over a 
 volume $V$.  Then a local homogeneous problem can be defined over a 
@@ -146,9 +143,6 @@ the nodal balance equation
   \label{eq:elementresponse}
 \end{equation}
 
-%----------------------------------------------------------------------------%
-\subsubsection{Global Neutron Balance}
-
 Global balance is defined by the eigenvalue response matrix
 equation
 \begin{equation}
@@ -176,8 +170,6 @@ respect to an infinite expansion).
 
 %===========================================================================%
 \subsection{Survey of ERMM Methods}
-
-\subsubsection{Diffusion-based Methods}
 
 The method defined by
 Eqs. \ref{eq:local}-\ref{eq:elementresponse} has its roots in
@@ -218,8 +210,6 @@ responses using discretized operators were examined \cite{roberts2011ser}.
 By numerically integrating the diffusion equation, heterogeneous nodes 
 are treated naturally, though no diffusion models having heterogeneous nodes 
 were studied.
-
-\subsubsection{Transport-based Methods}
 
 In addition to methods based on diffusion 
 theory, work was also done to use transport theory
@@ -362,44 +352,6 @@ generation.
 To support these goals, a number of specific subtopics are addressed, 
 each of which is described as follows.
 
-%----------------------------------------------------------------------------%
-\subsubsection{Deterministic Transport Algorithms}
-
-For the response matrix method to be viable, response functions must be 
-computed efficiently.  Each response function represents by itself a 
-comparatively small fixed source transport problem subject to an incident 
-boundary flux on one surface and vacuum on the remaining surfaces.  Most 
-recent work on transport algorithms has addressed very large models, with 
-a particular emphasis on acceleration techniques for large scale
-parallel computing.  
-
-In this work, algorithm development focuses exclusively on the smaller 
-transport problems associated with response generation.  
-The various transport discretizations
-used and the algorithms to solve the resulting equations 
-are discussed in Chapter \ref{sec:transport_methods}.  Chapter 
-\ref{sec:transport_pc} extends the discussion with development of 
-preconditioners (effectively, accelerators) for application to 
-Krylov linear solvers for the transport equation.  A detailed numerical 
-comparison of several solvers and preconditioners is provided in Chapter 
-\ref{sec:transport_results}.
-
-%----------------------------------------------------------------------------%
-\subsubsection{Conservative Expansions for Deterministic Transport Responses}
-
-As this work applies deterministic transport methods to compute response
-functions, the associated integrals over the boundary phase 
-space become weighted sums based on numerical quadrature.  For the 
-angular variable in particular, the orthogonal basis and quadrature used
-must be consistent to maintain a ``conservative'' expansion.  Such  
-expansions maintain neutron balance and typically lead to more 
-accurate results with fewer expansion terms. A study of basis sets 
-and associated quadrature sets for a variety of transport approximations 
-is discussed in Chapter \ref{sec:expansion}.
-
-%----------------------------------------------------------------------------%
-\subsubsection{Solving the Eigenvalue Response Matrix Equations}
-
 Once the responses defining Eq. \ref{eq:erme}  are defined, an 
 iterative scheme is 
 required to solve for the boundary coefficients and eigenvalue.  The most
@@ -426,14 +378,38 @@ Chapter \ref{sec:erme_solver_results} provides a numerical
 study of the the methods of  Chapter \ref{sec:newton} as applied 
 to several benchmark problems.
 
+
+
 %-------------------------------*- Mode:TeX -*-------------------------------%
 \section{Accelerating $\lambda$- and $k$-Convergence}
 \label{sec:newton}
 
-In Chapter \ref{sec:fixedpoint}, we showed the eigenvalue response matrix 
-equations lead naturally to a fixed point iteration similar in spirit to 
-the traditional power method for $k$-eigenvalue problems.  In this chapter,
-we examine efficient methods for solving the inner $\lambda$-eigenvalue 
+Recall the global eigenvalue problem, expressed mathematically as
+\begin{equation}
+  \oper{T} \phi(\vec{\rho}) = \frac{1}{k} \oper{F} \phi(\vec{\rho}) \, .
+  \tag{\ref{eq:global}}
+\end{equation}
+The $k$-eigenvalue can be interpreted physically as the ratio of neutrons
+produced in one generation to the previous generation.  This can alternatively
+be viewed as the ratio of gains to losses in a given generation. Applying this
+interpretation to the response matrix formalism, we can update $k$ via the 
+process
+\begin{equation}
+ k_{n+1} = \frac{\mathbf{F}(k_{n})\mathbf{J}_{-}} 
+    { \mathbf{A}(k_{n}) \mathbf{J}_{-} + \mathbf{L}(k_{n}) \mathbf{J}_{-} }\, ,
+\label{eq:picard}
+\end{equation}
+where $\oper{F}(k)\mathbf{J}_{-}$ is the global fission rate, 
+$\oper{A}(k) \mathbf{J}_{-}$ is the global absorption rate,
+and $\oper{L}(k) \mathbf{J}_{-}$ is the total leakage rate
+from global boundaries.
+
+Equation \ref{eq:picard} represents a Picard (fixed point) iteration
+for the $k$-eigenvalue. The convergence properties of this iteration
+are generally favorable \cite{robertsXXX}, but here, we seek more 
+efficient schemes.  In particular, we develop more efficient 
+methods for solving the 
+inner $\lambda$-eigenvalue 
 problem within a fixed point iteration.  Additionally,
 we seek alternative iteration schemes that lead to fast convergence of 
 $k$ and thus minimize the number of response function evaluations needed.
@@ -442,9 +418,6 @@ is by far the most time-intensive component of the process.
 
 %----------------------------------------------------------------------------%
 \subsection{Solving the Inner Eigenvalue Problem}
-
-
-\subsubsection{Power Iteration}
 
 In the fixed point iteration analyzed in Chapter \ref{sec:fixedpoint}, 
 the current eigenvalue problem 
@@ -474,48 +447,17 @@ with $k$.
 
 Due to the large $\rho$, 1000's of iterations are required to reduce 
 residual norms $||\mathbf{MRJ}_- - \lambda \mathbf{J}_-||$ to within the
-tolerances used in our later analysis.  Chebyshev acceleration 
+tolerances used in our later analysis.  
+Chebyshev acceleration 
 was considered for accelerating convergence, but its utility is severely 
 limited due to the nature of the eigenspectrum of $\mathbf{MR}$, a 
-significant portion of which sits away from the real axis.  
-Figure \ref{fig:spectrum} shows the current eigenspectrum for
-the 2-D IAEA problem \cite{anl1977benchmark} for converged $k$ using 
-zeroth- and second-order DLP expansions, and $2\times 2$ coarse 
-meshes per assembly; see Appendix \ref{app:benchmarks} for 
-more problem details.  Superimposed on the graph is an ellipse 
-bounding the spectrum, centered at the origin with 
-semi-major axis equal to the second largest eigenvalue and semi-minor axis 
-equal to the maximum modulus along the imaginary axis, $\epsilon$.  Were 
-this spectrum completely real instead (so $\epsilon = 0$), it can be 
-shown \cite{hageman1967cpm} that the optimal asymptotic speedup via 
-Chebyshev acceleration is close to 20 for this problem.  On the contrary, 
-for the true complex spectrum, the optimal speedup is limited to less 
-than 2, and that assumes the dominance ratio and $\epsilon$ are known
-{\it a priori} which is generally untrue. 
-
-\begin{figure}[ht]
-  \centering
-  \begin{subfigure}[b]{0.49\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]
-                    {spectrum0.jpg}
-    \caption{0th order}
-  \end{subfigure}
-    \begin{subfigure}[b]{0.49\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]
-                      {spectrum2.jpg}
-      \caption{2nd order}
-    \end{subfigure}
-    \caption{Representative current eigenspectra for the IAEA problem.  In both 
-             cases the maximum modulus along the imaginary axis is 
-             $\epsilon \approx 0.54$.}            
-  \label{fig:spectrum}            
-\end{figure}
-
-
-Despite these theoretical limitations, recent work claims to have 
-used Chebyshev acceleration successfully for solving the inner 
+significant portion of which sits away from the real axis .  
+For a typical problem, our previous work 
+showed that the expected (theoretical) speedup is limited to 
+about 2, as opposed to the factor of 20 gained were the spectrum 
+completely real \cite{roberts2012ksi}.
+Despite these theoretical limitations, 
+Chebyshev acceleration was recently used successfully for solving the inner 
 problem \cite{zhang2012ehs}.  However, it seems likely its success would 
 be highly problem-dependent and subject to significant tuning, two 
 features we would ultimately choose to avoid.
@@ -557,9 +499,10 @@ An alternative to IRAM used in this work is the Krylov-Schur (KS) method
 decomposition,
 where the upper Hessenberg matrix $\oper{H}$ above becomes a strictly upper
 triangle matrix $\oper{T}$.  Using this decomposition, it is comparatively
-easier numerically to keep the desired spectral information, and the method is
-apparently often more efficient than IRAM.  As for ERAM, the default SLEPc
-implementation of KS is used; the method and its implementation in SLEPc are
+easier numerically to keep the desired spectral information, and the 
+method is apparently often more efficient than IRAM.  As for ERAM, the 
+default SLEPc implementation of KS is used; the method and its 
+implementation in SLEPc are
 described in Ref. \cite{slepc-str-7}.
 
 %----------------------------------------------------------------------------%
@@ -953,7 +896,7 @@ truncation errors affect the solutions observed.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[keepaspectratio, width = 5.0 in]
+    \includegraphics[keepaspectratio, width = 3.5 in]
                     {tolerance_study_eigenvalue}
     \caption{Absolute relative eigenvalue error for the 2-D IAEA 
              problem as a function of residual 
@@ -963,7 +906,7 @@ truncation errors affect the solutions observed.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[keepaspectratio, width = 5.0 in]
+    \includegraphics[keepaspectratio, width = 3.5 in]
                     {tolerance_study_power}
     \caption{Maximum absolute relative assembly power error for the 2-D IAEA 
              problem as a function of 
@@ -1010,7 +953,7 @@ subsequent performance analyses.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[keepaspectratio, width = 5.0 in]
+    \includegraphics[keepaspectratio, width = 3.5 in]
                     {diffusion_order_study_eigenvalue}
     \caption{Absolute relative eigenvalue error as 
              a function of spatial order.}
@@ -1019,7 +962,7 @@ subsequent performance analyses.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[keepaspectratio, width = 5.0 in]
+    \includegraphics[keepaspectratio, width = 3.5 in]
                     {diffusion_order_study_power}
     \caption{Maximum absolute relative assembly power error as a function of 
              spatial order.}
@@ -1147,7 +1090,7 @@ norm, it was included for study with the remaining algorithms.
  
 \begin{figure}[ht]
     \centering
-    \includegraphics[keepaspectratio, width = 5.0 in]
+    \includegraphics[keepaspectratio, width = 3.5 in]
                     {diffusion_picard_acceleration}
     \caption{Comparison of Picard acceleration schemes for the 
              2-D IAEA problem (solid lines) and Koeberg 
@@ -1253,7 +1196,7 @@ and 988382 for the 3-D IAEA problem.
  \begin{threeparttable}
  \begin{tabular}{cccccc} 
  \toprule 
-  solver & time [s] & r. time [s]\tnote{f} & inners & outers & $k$-evaluations \\
+  solver & time [s] & r. time [s]\tnote{f} & inners & outers & $k$-evals. \\
  \midrule 
  &  \multicolumn{5}{c}{2-D IAEA} \\ 
  \midrule 
@@ -1327,10 +1270,10 @@ the lagged approach has the same number of outer iterations as the
 regular approach but reduces the number of $k$ evaluations by nearly half.
 
 Steffensen's method provides the fastest convergence with respect to 
-outer iterations, but it relies on two $k$-evaluations per outer iteration.
+outer iterations, but it relies on two $k$ evaluations per outer iteration.
 Picard with exponential extrapolation yields the lowest computational 
-time and the fewest $k$-evaluations.  While Newton's method with a 
-coarse $\Delta k$ is competitive with respect to $k$-evaluations, the 
+time and the fewest $k$ evaluations.  While Newton's method with a 
+coarse $\Delta k$ is competitive with respect to $k$ evaluations, the 
 overhead of solving the linear systems is higher than the cost of the 
 $\lambda$-eigenvalue problem in the Picard iteration.
 
@@ -1341,7 +1284,7 @@ $\lambda$-eigenvalue problem in the Picard iteration.
 From the diffusion analyses, it appears that Picard iteration using 
 KS for the inners and the exponential extrapolation for accelerating 
 the outers yields the best performance.  The Newton methods perform 
-about as well with respect to $k$-evaluations, but the cost of 
+about as well with respect to $k$ evaluations, but the cost of 
 applying the method is higher per iteration than the Picard variants,
 implying further work on preconditioning the inner solves is warranted.
 
@@ -1387,7 +1330,7 @@ study of the modified spatial basis developed in
 Section \ref{sec:modified_spatial_basis} would potentially be 
 of great value.
 
-\begin{table}[ht] 
+\begin{table*}[ht] 
  \begin{center} 
  
   \begin{threeparttable}
@@ -1423,7 +1366,7 @@ Chebyshev-$\psi$ &    3  &     0.04   &     2.42   &     6.43   &     0.35   &  
  \caption{2-D C5G7 order convergence.  All errors in \%, with 
           reference results from \Detran on same mesh.} 
  \label{tbl:c5g7_order_convergence} 
-\end{table} 
+\end{table*} 
 
 \subsubsection{Solver Comparison}
 
@@ -1452,7 +1395,7 @@ highlights a significant value in selecting a conservative basis,
 since the extrapolated Picard iteration was the best performing 
 method for the diffusion problems.
 
-\begin{table}[ht] 
+\begin{table*}[ht] 
  \begin{center} 
  
   \begin{threeparttable}
@@ -1488,7 +1431,7 @@ method for the diffusion problems.
           Picard with exponential extrapolation fails due to the nonconservative spatial 
           basis, \ie $\lambda \ne 1$.} 
  \label{tbl:c5g7_outer_study} 
-\end{table} 
+\end{table*} 
 
 \subsection{3-D Takeda}
 
@@ -1531,7 +1474,7 @@ boundary quantities should therefore be relatively smooth functions of space.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[keepaspectratio, width = 5.0 in]
+    \includegraphics[keepaspectratio, width = 3.5 in]
                     {takeda_order_study_eigenvalue_error}
     \caption{Takeda problem absolute relative eigenvalue error as 
              a function of angular order for several spatial orders.  
@@ -1543,7 +1486,7 @@ boundary quantities should therefore be relatively smooth functions of space.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[keepaspectratio, width = 5.0 in]
+    \includegraphics[keepaspectratio, width = 3.5 in]
                     {takeda_order_study_nodal_power_error}
     \caption{Takeda problem absolute relative nodal power error as 
              a function of angular order for several spatial orders.  
@@ -1567,9 +1510,9 @@ total response function time summed over all processors.
 Similar to the diffusion results, the extrapolated Picard iteration 
 proves to be the most efficient of the solvers studied.  
 Newton's method with the coarse $k$ finite difference yielded just as 
-few $k$-evaluations but with a slightly higher overall cost.
+few $k$ evaluations but with a slightly higher overall cost.
 
-\begin{table}[ht] 
+\begin{table*}[ht] 
  \begin{center} 
  
   \begin{threeparttable}
@@ -1606,18 +1549,18 @@ few $k$-evaluations but with a slightly higher overall cost.
           spatial expansion and third order polar and azimuthal angle 
           expansions.} 
  \label{tbl:takeda_outer_study} 
-\end{table} 
+\end{table*} 
 
 \subsection{Summary}
 
 Based on the results for both the diffusion and transport problems, Picard 
 iteration with the exponential extrapolation appears generally to be the most
-efficient of the methods, yielding minimum numbers of $k$-evaluations 
+efficient of the methods, yielding minimum numbers of $k$ evaluations 
 while providing the lowest global solver overhead.  However, the 
 extrapolation is based on $\lambda$ converging to unity, and because this 
 is not always guaranteed, Newton's method with the coarse finite difference 
 provides a more consistently robust solver, with nearly as 
-few $k$-evaluations and only relatively small overhead due to the 
+few $k$ evaluations and only relatively small overhead due to the 
 inner linear solves.
 
 It is anticipated further work on preconditioners for Newton's method 
