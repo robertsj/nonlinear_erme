@@ -1,0 +1,6 @@
+./clean
+pdflatex nonlinear_erme_main.tex
+pdflatex nonlinear_erme_main.tex
+bibtex   nonlinear_erme_main.aux
+pdflatex nonlinear_erme_main.tex
+pdflatex nonlinear_erme_main.tex

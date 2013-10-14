@@ -1,0 +1,103 @@
+%\documentclass[preprint, 12pt]{elsarticle}
+\documentclass[final, 3p, 10pt]{elsarticle}
+
+\usepackage[bitstream-charter]{mathdesign}      % nice font
+\usepackage{amsmath}                            % lots of math typesetting
+\usepackage{tikz}                               % pretty pictures
+\usepackage{mathtools}                          % used for ceiling command
+\usepackage{booktabs}                           % pretty tables
+\usepackage{algorithm2e}                        % nice algorithms
+\usepackage{imakeidx}                           % nice indexing
+\usepackage{amsfonts}                           % special characters
+\usepackage{listings}                           % to display code snippets
+\usepackage{xspace}                             % helps spacing for \Detran
+\usepackage[refpage]{nomencl}                   %
+\usepackage{subcaption}
+\usepackage{lscape}
+\usepackage{threeparttable}
+%\usepackage{fullpage}
+
+\journal{Journal of Computational Physics}
+
+\newcommand{\Detran}{{\tt Detran}\xspace}
+\newcommand{\Serment}{{\tt Serment}\xspace}
+\newcommand{\ie}{{\it i.e.}\xspace}
+\newcommand{\eg}{{\it e.g.}\xspace}
+\newcommand{\transp}{\mathsf{T}}
+% Other helpful macros
+\newcommand{\oper}[1]{\mathbf{#1}}
+
+\begin{document}
+
+\begin{frontmatter}
+
+
+\title{Solving Eigenvalue Response Matrix Equations with 
+       Nonlinear Techniques}
+
+%% use optional labels to link authors explicitly to addresses:
+%% \author[label1,label2]{<author name>}
+%% \address[label1]{<address>}
+%% \address[label2]{<address>}
+
+\author[label1]{Jeremy A. Roberts\corref{cor1}}
+\author[label2]{Benoit Forget}
+\address[label1]{Department of Mechanical and Nuclear Engineering,
+                 Kansas State University, 3002 Rathbone Hall, Manhattan, KS 66506, USA}
+\address[label2]{Department of Nuclear Science and Engineering, 
+                 Massachusetts Institute of Technology,
+                 77 Massachusetts Avenue, 24-107, Cambridge, MA 02139, USA}
+\cortext[cor1]{Corresponding author; email address: jaroberts@ksu.edu.}
+
+\begin{abstract}
+%% Text of abstract
+This paper revisits the eigenvalue response matrix method as an 
+approach for solving the $k$-eigenvalue problem fundamental to 
+nuclear reactor analysis. The method is based on a
+coarse mesh decomposition of the domain in space.  Coarse 
+meshes are linked at their boundaries via incident flux 
+response functions, which are solutions to fixed boundary 
+source problems where the source is a member of an orthogonal
+basis in all phase space variables.
+In its most straightforward form, the method consists of a two-level 
+eigenproblem.  An outer Picard iteration updates the $k$-eigenvalue, 
+while the inner eigenproblem  imposes neutron balance between coarse 
+meshes.  Several eigensolvers, including power iteration and Krylov 
+methods, are evaluated for this inner problem.  To accelerate the 
+process, Steffensen's method is investigated.
+The paper also demonstrates how the method can be recast in a form suitable
+for solution by Newton's method, and various Newton-Krylov
+methods are studied using both ILU and multigrid preconditioning.
+All of the methods are applied to a set of two-dimensional diffusion
+and transport benchmarks.  The results indicate the Steffensen's method
+solves all the problems in the fewest number of response evaluations.
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+preconditioning \sep neutron transport \sep Krylov \sep discrete ordinates
+\end{keyword}
+
+\end{frontmatter}
+
+\input{nonlinear_erme_content}
+
+
+%% References with bibTeX database:
+\bibliographystyle{elsarticle-num}
+\bibliography{robertsj_thesis.bib}
+%\bibliographystyle{unsrt}
+
+
+\end{document}
+
+\begin{abstract}
+
+\end{abstract}
+
+\include{nonlinear_erme_content}
+
+\end{document}
