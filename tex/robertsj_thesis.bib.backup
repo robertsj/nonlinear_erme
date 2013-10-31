@@ -73,14 +73,6 @@
   keywords = {response matrix}
 }
 
-@PHDTHESIS{roberts2014arm,
-  author = {Roberts, J. A.},
-  title = {{Advanced Response Matrix Methods for Full Core Analysis}},
-  year = {2014},
-  school = {Massachusetts Institute of Technology},
-  keywords = {response matrix}
-}
-
 @article{weiss1975hor,
   title={{High-Order Response Matrix Equations In Two-Dimensional Geometry}},
   author={Weiss, Z. and Lindahl,  S-{\"O}.},
@@ -158,17 +150,6 @@
   timestamp = {2009.12.02}
 }
 
-
-@INPROCEEDINGS{roberts2014psb,
-  author = {Roberts, J. A. and Forget, B.},
-  title = {{Phase Space Basis Functions for Response Matrix Methods}},
-  booktitle = {Submitted for Inclusion in the Proceedings of the 
-               International Conference on the Physics 
-               of Reactors (PHYSOR 2014)},
-  year = {2014}
-}
-
-
 @inproceedings{ferrer2012lsa,
   title={{Linear source approximation in CASMO5}},
   author={Ferrer, R. and Rhodes, J. and Smith, K.},
@@ -203,17 +184,6 @@
   keywords = {response matrix},
   publisher = {Elsevier}
 }
-
-
-
-@ARTICLE{roberts2014dpm,
-  author = {Roberts, J. A. and Forget, B.},
-  title = {{Multigroup Diffusion Preconditioners for Multiplying 
-            Fixed Source Transport Problems}},
-  journal = {Submitted to Journal of Computational Physics},
-  year = {2013}
-}
-
 
 @INPROCEEDINGS{roberts2011ser,
   author = {Roberts, J. A. and Forget, B.},
@@ -1116,21 +1086,25 @@ rinciple.}
 
 @article{romano2013ddm,
 title = "Data decomposition of Monte Carlo particle transport simulations via tally servers ",
+
 journal = "Journal of Computational Physics ",
+
 volume = "252",
+
 number = "0",
+
 pages = "20 - 36",
+
 year = "2013",
+
 note = "",
+
 issn = "0021-9991",
+
 doi = "http://dx.doi.org/10.1016/j.jcp.2013.06.011",
+
 url = "http://www.sciencedirect.com/science/article/pii/S002199911300435X",
+
 author = "Paul K. Romano and Andrew R. Siegel and Benoit Forget and Kord Smith",
 }
 
-@ARTICLE{roberts2014cer,
-  author = {Roberts, J. A. and Everson, M. and Forget, B.},
-  title = {{On the Convergence of the Eigenvalue Response Matrix Method}},
-  journal = {Submitted to the Journal of Applied Mathematics},
-  year = {2013}
-}

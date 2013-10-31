@@ -1,4 +1,4 @@
-%\documentclass[preprint, 12pt]{elsarticle}
+%\documentclass[preprint, 11pt]{elsarticle}
 \documentclass[final, 5p, 10pt]{elsarticle}
 
 \usepackage[bitstream-charter]{mathdesign}      % nice font
@@ -51,26 +51,34 @@
 
 \begin{abstract}
 %% Text of abstract
-This paper revisits the eigenvalue response matrix method as an 
-approach for solving the $k$-eigenvalue problem fundamental to 
-nuclear reactor analysis. The method is based on a
-coarse mesh decomposition of the domain in space.  Coarse 
-meshes are linked at their boundaries via incident flux 
-response functions, which are solutions to fixed boundary 
-source problems where the source is a member of an orthogonal
-basis in all phase space variables.
-In its most straightforward form, the method consists of a two-level 
-eigenproblem.  An outer Picard iteration updates the $k$-eigenvalue, 
-while the inner eigenproblem  imposes neutron balance between coarse 
-meshes.  Several eigensolvers, including power iteration and Krylov 
-methods, are evaluated for this inner problem.  To accelerate the 
-process, Steffensen's method is investigated.
-The paper also demonstrates how the method can be recast in a form suitable
-for solution by Newton's method, and various Newton-Krylov
-methods are studied using both ILU and multigrid preconditioning.
-All of the methods are applied to a set of two-dimensional diffusion
-and transport benchmarks.  The results indicate the Steffensen's method
-solves all the problems in the fewest number of response evaluations.
+
+This paper presents new algorithms for use in 
+the eigenvalue response matrix method (ERMM) for reactor 
+eigenvalue problems.  ERMM spatially decomposes a
+ domain into independent nodes linked via
+ boundary conditions approximated as 
+truncated orthogonal expansions, the coefficients of which are  
+response functions. 
+In its simplest form, ERMM consists of a two-level 
+eigenproblem: an outer Picard iteration updates the $k$-eigenvalue 
+via balance,
+while the inner $\lambda$-eigenproblem imposes neutron balance between nodes.  
+Efficient methods are developed for solving the inner $\lambda$-eigenvalue 
+problem within the outer Picard iteration.  Additionally,
+alternative methods including Picard acceleration schemes, Steffensen's 
+method, and Newton's method are developed.  These approaches can 
+yield faster $k$ convergence and a need for fewer
+ $k$-dependent response function evaluations,
+which is important since response computation represents the 
+largest cost for many problems.  Based on results from  
+several diffusion and transport benchmark models, it was found that 
+the Krylov-Schur method 
+applied to the $\lambda$-eigenvalue problem reduces Picard solver 
+times by a factor of 2--5.  Furthermore, it was found that an 
+accelerated Picard iteration can improve this by up to an additional 
+factor of 2--3 for problems dominated by response generation but that 
+Newton's method may provide nearly the same performance with improved 
+robustness.
 \end{abstract}
 
 \begin{keyword}

@@ -204,17 +204,6 @@
   publisher = {Elsevier}
 }
 
-
-
-@ARTICLE{roberts2014dpm,
-  author = {Roberts, J. A. and Forget, B.},
-  title = {{Multigroup Diffusion Preconditioners for Multiplying 
-            Fixed Source Transport Problems}},
-  journal = {Submitted to Journal of Computational Physics},
-  year = {2013}
-}
-
-
 @INPROCEEDINGS{roberts2011ser,
   author = {Roberts, J. A. and Forget, B.},
   title = {{Solving Eigenvalue Response Matrix Equations using Jacobian-Free

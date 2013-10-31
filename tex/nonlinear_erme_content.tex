@@ -365,10 +365,10 @@ to be the response functions.  If these are computed on-the-fly (that is,
 for each new $k$), a method that minimizes the number of $k$ evaluations is
 highly desirable.
 
-The rest of this paper is organized as follows.  Section \ref{sec:picard}
+The rest of this paper is organized as follows.  Section \ref{sec:inner}
 discusses solution of the response matrix equations via fixed point 
 iteration and methods for solving the resulting eigenvalue problem 
-for $\lambda$ efficiently.  Section \ref{sec:newton} presents schemes 
+for $\lambda$ efficiently.  Section \ref{sec:outer} presents schemes 
 that provide faster convergence in $k$ than standard fixed-point iteration,
 which is important since the number of $k$-evaluations defines the 
 number of responses evaluated.  Section \ref{sec:results} provides 
@@ -379,7 +379,7 @@ provides commentary.
 
 %----------------------------------------------------------------------------%
 \section{Solving the $\lambda$-Eigenvalue Problem}
-\label{sec:newton}
+\label{sec:inner}
 
 The $k$-eigenvalue can be interpreted physically as the ratio of neutrons
 produced in one generation to the previous generation.  This can 
@@ -500,10 +500,12 @@ Using this decomposition, it is comparatively
 easier numerically to keep the desired spectral information, and the 
 method is apparently often more efficient than IRAM \cite{slepc-str-7}. 
 
+%----------------------------------------------------------------------------%
 \section{Acceleration $k$-convergence}
+\label{sec:outer}
 
 The convergence properties of the fixed-point iteration
-are generally favorable \cite{robertsXXX}, but in many cases,
+are generally favorable \cite{roberts2014cer}, but in many cases,
 better convergence in $k$ is desirable.  Because responses 
 must be recomputed for each new value of $k$,  methods that 
 minimize the number of unique $k$ values are critical for 
@@ -557,17 +559,18 @@ between $k$ and $\lambda$, the latter of which they denoted
 the ``normalization constant.'' 
 Moving from a $k$-update via balance, they assumed the relation 
 $k \propto 1/\lambda$ and found good results.  In theory, we might expect 
-this to be the case.  Expanding the result of Eq. \ref{eq:dlambda_db_asy}
-for small $B$, we find that 
+this to be the case.  Previous work \cite{roberts2014cer} showed 
+using one group diffusion theory that 
 \begin{equation}
  \frac{d \lambda}{d B} \propto  B \, ,
 \end{equation}
-suggesting that 
+for small
+buckling $B = \sqrt{\nu \Sigma_f/k - \Sigma_a}$, which
+suggests
 \begin{equation}
  \lambda \approx  a B^2 + b \approx \frac{a'}{k} + b' \, .
 \end{equation}
-Of course, this is based on a one group approximation in the limit of 
-very small nodes. Interestingly, Lindahl
+Interestingly, Lindahl
 found that $k^{-1} \propto \lambda^{-1}$ produced better results, having 
 compared to both $k \propto \lambda^{-1}$ and $k \propto \lambda$ (though
 without giving numerical results) \cite{lindahl1976mdr}.
@@ -770,7 +773,7 @@ setting $\mathbf{s} =  \mathbf{M}^{-1} \tilde{\mathbf{s}} $.
 
 
 In this section, the solvers developed in 
-Section \ref{sec:newton} are applied to several benchmark
+Section \ref{sec:outer} are applied to several benchmark
 problems.  The goal is to determine
 which of the various algorithms is best suited for solving 
 response matrix equations.  All response matrix calculations are performed 
@@ -785,14 +788,14 @@ several external packages, including PETSc \cite{petsc} and
 SLEPc \cite{slepc} for various linear and nonlinear solvers.
 
 Several diffusion and transport benchmarks were studied.  These 
-include  the 2-D and 3-D IAEA \cite{argonne}, the 2-D 
-Biblis \cite{muller}, and 2-D Koeberg diffusion benchmarks as well 
-as the 2-D C5G7 \cite{c5g7} 
-and 3-D Takeda \cite{takeda} transport benchmarks.
+include  the 2-D and 3-D IAEA \cite{anl1977benchmark}, the 2-D 
+Biblis \cite{muller1991bmd}, and 2-D Koeberg diffusion benchmarks as well 
+as the 2-D C5G7 \cite{lewis2001bsd} 
+and 3-D Takeda \cite{takeda1991ntb} transport benchmarks.
 
 For all problems, the multigroup dependence is exactly treated while the 
 spatial dependence is expanded in discrete Legendre polynomials 
-\cite{mosher2006ifr, robertsphd} DLPs.  For the diffusion 
+\cite{mosher2006ifr, roberts2014arm} DLPs.  For the diffusion 
 problems, each 2-D assembly is discretized 
 using a uniform $20\times 20$ spatial mesh, corresponding roughly to 
 1 cm square cells.  For the 3-D IAEA problem, 20 cm cubes are 
@@ -813,9 +816,9 @@ approximation in space.
 For the transport benchmarks, the angular dependence is expanded 
 in DLPs for the angular flux or 
 angular current, or a conservative basis based on Chebyshev, Legendre, 
-and/or Jacobi polynomials \cite{robertsphd, zhang2012ehs} 
+and/or Jacobi polynomials \cite{roberts2014arm, zhang2012ehs} 
 for the angular flux.  For all cases, a product quadrature is employed 
-that exactly integrates the conservative basis moments \cite{robertsphd}.
+that exactly integrates the conservative basis moments \cite{roberts2014arm}.
 
 When computing responses, no symmetry is considered.  For homogeneous
 problems, exploiting symmetry would reduce the number of responses 
@@ -865,25 +868,34 @@ error, but for even looser tolerances.  For the subsequent diffusion
 analyses, a tolerance of $10^{-7}$ was selected to ensure only 
 truncation errors affect the solutions observed.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[keepaspectratio, width = 3.5 in]
-                    {tolerance_study_eigenvalue}
-    \caption{Absolute relative eigenvalue error for the 2-D IAEA 
-             problem as a function of residual 
-             norm tolerance for several spatial orders .}
-    \label{fig:tolerance_study_eigenvalue}
-\end{figure}
 
-\begin{figure}[ht]
+\begin{figure*}[htbp]
+  \centering
+  %
+  \begin{subfigure}{0.49\textwidth}
     \centering
-    \includegraphics[keepaspectratio, width = 3.5 in]
+    \includegraphics[keepaspectratio, width=1.0\textwidth]
+                    {tolerance_study_eigenvalue}
+    \caption{Eigenvalue error.}
+    \label{fig:tolerance_study_eigenvalue}                   
+  \end{subfigure}
+  %
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[keepaspectratio, width=1.0\textwidth]
                     {tolerance_study_power}
-    \caption{Maximum absolute relative assembly power error for the 2-D IAEA 
-             problem as a function of 
-             residual norm tolerance for several spatial orders.}
-    \label{fig:tolerance_study_power}
-\end{figure}
+    \caption{Assembly power error.}
+    \label{fig:tolerance_study_power}                 
+  \end{subfigure}
+  \caption{Absolute relative eigenvalue 
+          (\ref{fig:diffusion_order_study_eigenvalue}) and 
+          absolute maximum relative 
+          assembly power
+           (\ref{fig:diffusion_order_study_power})
+          errors for the 2-D IAEA problem as functions of the
+          residual norm tolerance for several spatial orders.}
+  \label{fig:diffusion_order_study}
+\end{figure*}
 
 \subsubsection{Orders and Accuracy}
 \label{sec:diffusion_order_accuracy}
@@ -922,23 +934,53 @@ and eigenvalue errors on the range of a few pcm.  Consequently, a fourth
 order expansion was selected for use in comparing the solvers in 
 subsequent performance analyses.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[keepaspectratio, width = 3.5 in]
-                    {diffusion_order_study_eigenvalue}
-    \caption{Absolute relative eigenvalue error as 
-             a function of spatial order.}
-    \label{fig:diffusion_order_study_eigenvalue}
-\end{figure}
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[keepaspectratio, width = 3.5 in]
+%                     {diffusion_order_study_eigenvalue}
+%     \caption{Absolute relative eigenvalue error as 
+%              a function of spatial order.}
+%     \label{fig:diffusion_order_study_eigenvalue}
+% \end{figure}
+% 
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[keepaspectratio, width = 3.5 in]
+%                     {diffusion_order_study_power}
+%     \caption{Maximum absolute relative assembly power error as a function of 
+%              spatial order.}
+%     \label{fig:diffusion_order_study_power}
+% \end{figure}
 
-\begin{figure}[ht]
+
+\begin{figure*}[htbp]
+  \centering
+  %
+  \begin{subfigure}{0.49\textwidth}
     \centering
-    \includegraphics[keepaspectratio, width = 3.5 in]
+    \includegraphics[keepaspectratio, width=1.0\textwidth]
+                    {diffusion_order_study_eigenvalue}
+    \caption{Eigenvalue error.}
+    \label{fig:diffusion_order_study_eigenvalue}                   
+  \end{subfigure}
+  %
+  \begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[keepaspectratio, width=1.0\textwidth]
                     {diffusion_order_study_power}
-    \caption{Maximum absolute relative assembly power error as a function of 
-             spatial order.}
-    \label{fig:diffusion_order_study_power}
-\end{figure}
+    \caption{Assembly power error.}
+    \label{fig:diffusion_order_study_power}                 
+  \end{subfigure}
+  \caption{Absolute relative eigenvalue 
+          (\ref{fig:diffusion_order_study_eigenvalue}) and 
+          absolute maximum relative 
+          assembly power
+           (\ref{fig:diffusion_order_study_power})
+          errors as functions of 
+          spatial order.}
+  \label{fig:diffusion_order_study}
+\end{figure*}
+
 
 \subsubsection{Inner Solver Comparison}
 
@@ -1272,13 +1314,11 @@ is based on 7 group data.
 \subsubsection{Orders and Accuracy}
  
 To assess the accuracy of the response schemes available for transport 
-problems, the C5G7 benchmark was solved using both a DLP and 
-Chebyshev-Legendre basis in angle. A DLP spatial basis and a full 
-energy expansion were used throughout.  Because the 
-spatial mesh is not exactly uniform, the DLP spatial expansion is not 
-likely to converge as quickly for the C5G7 problem as for the 
-uniformly-meshed diffusion problems (or the small test problems
-of Section \ref{sec:expansion}).  For all cases, 
+problems, the C5G7 benchmark was solved using a variety of 
+angular bases. Because the 
+spatial mesh is not exactly uniform, the DLP spatial expansion does
+not converge as quickly for the C5G7 problem as for the 
+uniformly-meshed diffusion problems.  For all cases, 
 the response transport calculations were converged to 
 a relative residual norm of $10^{-8}$, and the outer calculation was 
 converged to a nonlinear residual norm of $10^{-7}$.
@@ -1342,9 +1382,7 @@ The same set of global solvers used in
 Section \ref{sec:global_solver_diffusion} were also applied 
 to the 2-D C5G7 problem.  In this case, parallel computation 
 was necessary, and 64 processes were used throughout with a 
-single process for the global balance problem; see 
-Chapter \ref{sec:parallel} for more details on the parallel
-implementation of ERMM.
+single process for the global balance problem.
 
 Table \ref{tbl:c5g7_outer_study} provides the wall time,
 as well as the total and response time summed over all 
@@ -1434,29 +1472,34 @@ over all angular orders and bases is a shift from first to second order
 in space.  This is reasonable because the nodes are homogeneous and 
 boundary quantities should therefore be relatively smooth functions of space.
 
-\begin{figure}[ht]
+\begin{figure*}[htbp]
+  \centering
+  %
+  \begin{subfigure}{0.49\textwidth}
     \centering
-    \includegraphics[keepaspectratio, width = 3.5 in]
+    \includegraphics[keepaspectratio, width=1.0\textwidth]
                     {takeda_order_study_eigenvalue_error}
-    \caption{Takeda problem absolute relative eigenvalue error as 
-             a function of angular order for several spatial orders.  
-             The solid lines indicate the conservative basis, while the 
-             dashed and dashed-dot lines indicate the DLP basis used to 
-             expand the angular flux $\psi$ and current $J$, respectively.}
-    \label{fig:takeda_order_study_eigenvalue_error}
-\end{figure}
-
-\begin{figure}[ht]
+    \caption{Eigenvalue error.}
+    \label{fig:takeda_order_study_eigenvalue_error}                   
+  \end{subfigure}
+  %
+  \begin{subfigure}{0.49\textwidth}
     \centering
-    \includegraphics[keepaspectratio, width = 3.5 in]
+    \includegraphics[keepaspectratio, width=1.0\textwidth]
                     {takeda_order_study_nodal_power_error}
-    \caption{Takeda problem absolute relative nodal power error as 
-             a function of angular order for several spatial orders.  
-             The solid lines indicate the conservative basis, while the 
-             dashed and dashed-dot lines indicate the DLP basis used to 
-             expand the angular flux $\psi$ and current $J$, respectively.}
-    \label{fig:takeda_order_study_nodal_power_error}
-\end{figure}
+    \caption{Nodal power error.}
+    \label{fig:takeda_order_study_nodal_power_error}                 
+  \end{subfigure}
+  \caption{Takeda problem absolute relative 
+           eigenvalue (\ref{fig:takeda_order_study_eigenvalue_error})
+           and nodal power (\ref{fig:takeda_order_study_nodal_power_error})
+           errors as 
+           a function of angular order for several spatial orders.  
+           The solid lines indicate the conservative basis, while the 
+           dashed and dashed-dot lines indicate the DLP basis used to 
+           expand the angular flux $\psi$ and current $J$, respectively.}  
+  \label{fig:core_benchmark_plot}
+\end{figure*}
 
 \subsubsection{Solver Comparison}
 
@@ -1514,6 +1557,7 @@ few $k$ evaluations but with a slightly higher overall cost.
 \end{table*} 
 
 \section{Conclusion}
+\label{sec:conclusion}
 
 Based on the results for both the diffusion and transport problems, Picard 
 iteration with exponential extrapolation appears generally to be the most
@@ -1539,10 +1583,10 @@ required go a long way to minimize the time spent generating
 responses, while  
 related recent work successfully developed diffusion-based 
 transport preconditioners that significantly reduce the time of 
-individual response calculations \cite{robertsj2014jcp}.  Because 
+individual response calculations \cite{roberts2014dpm}.  Because 
 responses are independent, parallel computation will be a natural 
 component of 
 any future ERMM implementation.  Scoping studies have demonstrated 
 good scaling of {\tt Serment} on a small research 
-cluster \cite{robertsphd}, and ongoing work aims to test {\tt Serment} on 
+cluster \cite{roberts2014arm}, and ongoing work aims to test {\tt Serment} on 
 leadership-class machines.
