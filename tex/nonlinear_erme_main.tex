@@ -1,5 +1,5 @@
-%\documentclass[preprint, 11pt]{elsarticle}
-\documentclass[final, 5p, 10pt]{elsarticle}
+\documentclass[preprint, 11pt]{elsarticle}
+%\documentclass[final, 3p, 10pt]{elsarticle}
 
 \usepackage[bitstream-charter]{mathdesign}      % nice font
 \usepackage{amsmath}                            % lots of math typesetting
@@ -30,7 +30,6 @@
 \begin{document}
 
 \begin{frontmatter}
-
 
 \title{Solving Eigenvalue Response Matrix Equations with 
        Nonlinear Techniques}
@@ -64,19 +63,21 @@ eigenproblem: an outer Picard iteration updates the $k$-eigenvalue
 via balance,
 while the inner $\lambda$-eigenproblem imposes neutron balance between nodes.  
 Efficient methods are developed for solving the inner $\lambda$-eigenvalue 
-problem within the outer Picard iteration.  Additionally,
-alternative methods including Picard acceleration schemes, Steffensen's 
-method, and Newton's method are developed.  These approaches can 
-yield faster $k$ convergence and a need for fewer
- $k$-dependent response function evaluations,
-which is important since response computation represents the 
-largest cost for many problems.  Based on results from  
+problem within the outer Picard iteration. 
+ Based on results from  
 several diffusion and transport benchmark models, it was found that 
 the Krylov-Schur method 
 applied to the $\lambda$-eigenvalue problem reduces Picard solver 
-times by a factor of 2--5.  Furthermore, it was found that an 
-accelerated Picard iteration can improve this by up to an additional 
-factor of 2--3 for problems dominated by response generation but that 
+times (excluding response generation) by a factor of 2--5. 
+Furthermore, alternative methods including Picard acceleration schemes, Steffensen's 
+method, and Newton's method are developed.  These approaches can 
+yield faster $k$ convergence and a need for fewer
+ $k$-dependent response function evaluations,
+important because response computation is the 
+largest cost for many problems.  It was found that
+accelerating Picard iteration yields a reduction of 2--3 in total time 
+compared to the unaccelerated case
+for problems dominated by response generation but that 
 Newton's method may provide nearly the same performance with improved 
 robustness.
 \end{abstract}
@@ -86,7 +87,7 @@ robustness.
 
 %% MSC codes here, in the form: \MSC code \sep code
 %% or \MSC[2008] code \sep code (2000 is the default)
-preconditioning \sep neutron transport \sep Krylov \sep discrete ordinates
+response matrix \sep reactor physics \sep neutron transport \sep eigenvalue
 \end{keyword}
 
 \end{frontmatter}

@@ -46,8 +46,9 @@ of this work is on the latter, which shall be referred to as the
 {\it eigenvalue} response matrix method (ERMM) for clarity.
 
 Various formulations of ERMM have been proposed since
-its first use.  Here, we describe 
-a rather general approach based on expansions of the boundary 
+its first use.  Here, 
+a rather general approach is described that is
+based on expansions of the boundary 
 conditions that couple
 subvolumes of the global problem, a formalism introduced 
 as early as the work of Lindahl \cite{lindahl1976mdr} and
@@ -169,14 +170,14 @@ respect to an infinite expansion).
 
 
 %===========================================================================%
-\subsection{Survey of ERMM Methods}
+\subsection{Survey of ERMM Implementations}
 
 The method defined by
 Eqs. \ref{eq:local}-\ref{eq:elementresponse} has its roots in
  the work of Shimizu et al.
 \cite{shimizu1963rmm, shimizu1963arm}, 
 which represents what appears to be the first work on response 
-matrix methods.  While independent from it, the authors 
+matrix methods.  While independent from it, those authors 
 acknowledge a connection between their work and the earlier and 
 more general theory of invariant imbedding as developed by 
 Bellman {\it et al.} \cite{bellman1960iim}.  This initial work was 
@@ -205,7 +206,7 @@ and Weiss \cite{lindahl1981rrm}.
 
 These diffusion-based methods all rely on semi-analytic solutions to the 
 diffusion equation and hence require homogeneous nodes. In the initial 
-scoping studies performed for the present thesis, diffusion-based 
+scoping studies performed in support of the present paper, diffusion-based 
 responses using discretized operators were examined \cite{roberts2011ser}.  
 By numerically integrating the diffusion equation, heterogeneous nodes 
 are treated naturally, though no diffusion models having heterogeneous nodes 
@@ -227,9 +228,8 @@ be expressed as
                  + \frac{1}{k^2}\phi_{2}  + \ldots \, ,
 \end{equation}
 where $\phi_{i} $ is the flux for the $i$th neutron
-generation due to fission.  Correspondingly, we
-can define the associated currents and responses, 
-resulting in 
+generation due to fission.  The 
+associated responses can be similarly defined
 \begin{equation}
  \oper{R}(k) = \oper{R}_0 + \frac{1}{k}\oper{R}_1
                  + \frac{1}{k^2}\oper{R}_2  + \ldots \, .
@@ -255,8 +255,8 @@ transmission of incident neutrons from one surface to another surface ($T$),
 escape of neutrons born in the volume out of a surface ($L$), 
 production of neutrons in the volume due to neutrons born in the volume ($A$), 
 and production of neutrons in the volume due to neutrons 
-entering a surface ($S$). If we neglect all indices but the 
-surface, a current response can be expressed as
+entering a surface ($S$). If all indices but the 
+surface are neglected, a current response can be expressed as
 \begin{equation}
  r^{s}_{t} = T^s_t + \frac{1}{k}S^s(L_t + \frac{1}{k}A(L_t 
                    + \frac{1}{k}A(L_t + \cdots )) + \cdots) \, .
@@ -269,12 +269,12 @@ matrices $\mathbf{T}$, $\mathbf{L}$, $\mathbf{A}$, and $\mathbf{S}$
 are precomputed, and the full matrix $\mathbf{R}$ is
 computed on-the-fly by iteration.  In the actual
 implementation, the volume-dependent responses are
-actually unique for each pin in an assembly.  
+ unique for each pin in an assembly.  
 Additionally, spatial segmentation was used on
 boundaries, but angular dependence was neglected.
 
 The more
-recent extension of Ishii {\it et al.} addressed the 
+recent extension of Ishii {\it et al.} addressed this latter 
 limitation by including angular
 segmentation, increasing the achievable 
 fidelity. However, the resulting amount of data required
@@ -317,7 +317,7 @@ required.  Of course, these response functions are entirely independent
 for a given state and $k$, and so parallelization is a natural part of 
 the solution.  
 
-In the most recent work, responses were pre-computed as a function of 
+In much recent work, responses were pre-computed as a function of 
 $k$ and interpolated as needed.  In many cases, clever use of symmetry 
 can further minimize the required data.  For benchmark problems, this is 
 sensible, but as the effects of thermal feedback are included, each 
@@ -333,10 +333,10 @@ are promising (sub-percent errors on pin fission rates---though which
 error and what norm used are not clearly noted), the problem assessed is not 
 entirely representative of the problems of interest here.  
 
-Consequently, the major thrust of this thesis focuses on ERMM 
+Consequently,  this paper focuses on ERMM 
 implementations suitable for on-the-fly generation of response functions, 
 as this seems at present to be the only meaningful manner in which to
-apply ERMM.  Of course, any successes achieve in this context 
+apply ERMM.  Of course, any successes achieved in this context 
 would be readily applicable for generation of response databases, should 
 an adequate parameterization scheme be developed in the future.
 
@@ -346,35 +346,31 @@ an adequate parameterization scheme be developed in the future.
 The primary goal of this work is to develop a response matrix method that
 can efficiently leverage high fidelity deterministic transport methods for 
 solving large scale reactor eigenvalue problems on a variety of computer 
-architectures.  A secondary goal is to produce transport algorithms tailored
-to the relatively small problems associated with response function 
-generation.
-To support these goals, a number of specific subtopics are addressed, 
-each of which is described as follows.
-
-Once the responses defining Eq. \ref{eq:erme}  are defined, an 
-iterative scheme is 
-required to solve for the boundary coefficients and eigenvalue.  The most
-common approach historically has been to use the power method to solve the 
-global balance equation for $J$, with a corresponding $k$-update 
-based on neutron balance, leading to a fixed point iteration.  
-Within this fixed point iteration, more efficient schemes can be 
-used to solve the global balance equation.  
-However, in practice the most expensive part of the computation is likely 
-to be the response functions.  If these are computed on-the-fly (that is, 
-for each new $k$), a method that minimizes the number of $k$ evaluations is
-highly desirable.
-
-The rest of this paper is organized as follows.  Section \ref{sec:inner}
+architectures.  
+% Once the responses defining Eq. \ref{eq:erme} are defined, an 
+% iterative scheme is 
+% required to solve for the boundary coefficients and eigenvalue.  The most
+% common approach historically has been to use the power method to solve the 
+% global balance equation for $J$, with a corresponding $k$-update 
+% based on neutron balance, leading to a fixed point iteration.  
+% Within this fixed point iteration, more efficient schemes can be 
+% used to solve the global balance equation.  
+% However, in practice the most expensive part of the computation is likely 
+% to be the response functions.  If these are computed on-the-fly (that is, 
+% for each new $k$), a method that minimizes the number of $k$ evaluations is
+% highly desirable.
+Several solvers that support this goal are developed in this paper, 
+the remainder of which is organized as follows.
+ Section \ref{sec:inner}
 discusses solution of the response matrix equations via fixed point 
 iteration and methods for solving the resulting eigenvalue problem 
 for $\lambda$ efficiently.  Section \ref{sec:outer} presents schemes 
 that provide faster convergence in $k$ than standard fixed-point iteration,
 which is important since the number of $k$-evaluations defines the 
-number of responses evaluated.  Section \ref{sec:results} provides 
-a numerical study of the methods developed using 
-several benchmark problems, while Section \ref{sec:conclusion}
-provides commentary.
+number of responses evaluated.  A numerical study 
+of the methods using several benchmark problems is 
+provided in Section \ref{sec:results} followed by concluding remarks in
+Section \ref{sec:conclusion}.
 
 
 %----------------------------------------------------------------------------%
@@ -384,8 +380,8 @@ provides commentary.
 The $k$-eigenvalue can be interpreted physically as the ratio of neutrons
 produced in one generation to the previous generation.  This can 
 alternatively be viewed as the ratio of gains to losses in a given 
-generation. Applying thisinterpretation to the response matrix formalism, 
-we can update $k$ via the process
+generation. Applying this interpretation to the response matrix formalism, 
+ $k$ can be updated via the process
 \begin{equation}
  f(k) = k_{n+1} = \frac{\mathbf{F}(k_{n})\mathbf{J}_{-}} 
     { \mathbf{A}(k_{n}) \mathbf{J}_{-} + \mathbf{L}(k_{n}) \mathbf{J}_{-} }\, ,
@@ -423,12 +419,12 @@ with $k$.
 
 Due to the large $\rho$, 1000's of iterations are required to reduce 
 residual norms $||\mathbf{MRJ}_- - \lambda \mathbf{J}_-||$ to within the
-tolerances used in our later analysis.  
+tolerances used in the analysis below.  
 Chebyshev acceleration 
 was considered for accelerating convergence, but its utility is severely 
 limited due to the nature of the eigenspectrum of $\mathbf{MR}$, a 
 significant portion of which sits away from the real axis .  
-For a typical problem, our previous work 
+For a typical problem, previous work 
 showed that the expected (theoretical) speedup is limited to 
 about 2, as opposed to the factor of 20 gained were the spectrum 
 completely real \cite{roberts2012ksi}.
@@ -436,7 +432,7 @@ Despite these theoretical limitations,
 Chebyshev acceleration was recently used successfully for solving the inner 
 problem \cite{zhang2012ehs}.  However, it seems likely its success would 
 be highly problem-dependent and subject to significant tuning, two 
-features we would ultimately choose to avoid.
+features worth avoiding if possible.
 
 More efficient eigenvalue solvers such as Krylov subspace 
 methods can be used.  Krylov methods are based on generation
@@ -484,21 +480,21 @@ If $m$ becomes too large, the dense methods become too expensive.  To
 circumvent this issue, the Arnoldi method must be restarted.  In 
 the {\it explicitly} restarted Arnoldi method (ERAM), some combination of 
 the existing $m$ Ritz vectors is used to choose a single starting guess, 
-from which a new Arnoldi factorization is generated \cite{slepc-str-4}.
-
+from which a new Arnoldi factorization is generated \cite{slepc}.
 An alternative to explicit restart is {\it implicit} restart, where the 
 desired portion of the spectrum is retained continuously by contracting 
 from a subspace of dimension $m$ to a smaller space of size $p$ and mapping 
-back to the larger space.  This is done via implicitly-shifted QR, and leads 
-to the implicitly-restarted Arnoldi method (IRAM) \cite{sorensen1992iap}.  
-An alternative to IRAM used in this work is the Krylov-Schur (KS) method
+back to the larger space. 
+Several methods implement this idea, and the one used here 
+is the Krylov-Schur (KS) method
 \cite{stewart2002ksa}, which transforms a general Krylov decomposition 
 (of which the Arnoldi decomposition is a special case) into a Krylov-Schur 
 decomposition, where the upper Hessenberg matrix $\oper{H}$ 
 above becomes a strictly upper triangle matrix $\oper{T}$.  
 Using this decomposition, it is comparatively
 easier numerically to keep the desired spectral information, and the 
-method is apparently often more efficient than IRAM \cite{slepc-str-7}. 
+method can be more efficient than other implicitly-restarted 
+algorithms \cite{slepc}. 
 
 %----------------------------------------------------------------------------%
 \section{Acceleration $k$-convergence}
@@ -558,11 +554,12 @@ rediscovered the relationship
 between $k$ and $\lambda$, the latter of which they denoted
 the ``normalization constant.'' 
 Moving from a $k$-update via balance, they assumed the relation 
-$k \propto 1/\lambda$ and found good results.  In theory, we might expect 
+$k \propto 1/\lambda$ and found good results.  In theory, it
+is reasonable to expect
 this to be the case.  Previous work \cite{roberts2014cer} showed 
 using one group diffusion theory that 
 \begin{equation}
- \frac{d \lambda}{d B} \propto  B \, ,
+ \frac{d \lambda}{d B} \propto  B \, 
 \end{equation}
 for small
 buckling $B = \sqrt{\nu \Sigma_f/k - \Sigma_a}$, which
@@ -623,8 +620,7 @@ accuracy of the sequence estimates.  Within ERMM, it
 has been observed that Steffensen's method becomes unstable
 unless very small tolerances ($\approx 10^{-9}$) are used 
 for solving the $\lambda$-eigenvalue problem \cite{roberts2012ksi}.
-
-Furthermore, note that once the responses are evaluated for the initial
+Furthermore,  once the responses are evaluated for the initial
 guess, each successive Steffensen iteration requires two response 
 evaluations.  In general, the savings gained by second order convergence 
 may or may not outweigh the cost of additional evaluations depending 
@@ -637,7 +633,8 @@ on the problem.
 The eigenvalue response matrix problem has been recognized as being
 nonlinear since it was first solved, but it does not 
 appear to have been cast in a form for solution directly by 
-Newton-based methods until quite recently \cite{roberts2010ncm}.  
+Newton-based methods until quite 
+recently \cite{ roberts2011ser, roberts2010ncm}.  
 
 The eigenvalue response matrix equation, $k$ update equation, 
 and $L_2$ normalization of $J_{-}$ can be written as the nonlinear 
@@ -664,9 +661,10 @@ and the associated \index{Jacobian of ERME} Jacobian is defined
           & 0                                                       
           & 0
         \end{array} 
-  \right ]  \, .
+  \right ]  \, ,
   \label{eq:jacobian}
   \end{equation}
+where the $k$ subscripts indicate partial differentiation.
 For $\mathbf{R}(k)$ of size $m\times m$, the Jacobian is of 
 size $(m+2)\times(m+2)$.  Moreover, after one evaluation of 
 the response quantities, only the first $m+1$ rows of the $(m+1)$th 
@@ -783,19 +781,21 @@ transport code based on the discrete ordinates, method of characteristics,
 and diffusion approximations, and having implementations of 
 several modern transport solvers developed specifically 
 for the fixed-source problems characteristic of 
-response generation \cite{detran}.  {\tt Serment} and {\tt Detran} use 
-several external packages, including PETSc \cite{petsc} and 
-SLEPc \cite{slepc} for various linear and nonlinear solvers.
+response generation \cite{roberts2014dpm}.  {\tt Serment} 
+and {\tt Detran} use several external packages, including 
+PETSc \cite{petsc} and SLEPc \cite{slepc} for various linear 
+and nonlinear solvers.
 
 Several diffusion and transport benchmarks were studied.  These 
 include  the 2-D and 3-D IAEA \cite{anl1977benchmark}, the 2-D 
 Biblis \cite{muller1991bmd}, and 2-D Koeberg diffusion benchmarks as well 
 as the 2-D C5G7 \cite{lewis2001bsd} 
 and 3-D Takeda \cite{takeda1991ntb} transport benchmarks.
-
 For all problems, the multigroup dependence is exactly treated while the 
 spatial dependence is expanded in discrete Legendre polynomials 
-\cite{mosher2006ifr, roberts2014arm} DLPs.  For the diffusion 
+\cite{mosher2006ifr, roberts2014arm} DLPs.  
+
+For the diffusion 
 problems, each 2-D assembly is discretized 
 using a uniform $20\times 20$ spatial mesh, corresponding roughly to 
 1 cm square cells.  For the 3-D IAEA problem, 20 cm cubes are 
@@ -810,7 +810,7 @@ conservative, meaning $\lambda$ does not approach unity.
 For the 3-D Takeda benchmark, 5 cm 
 cubes are represented using a uniform 0.25 cm spatial mesh in 
 all directions.  Both problems are modeled using the discrete ordinates 
-method in angle with the diamond-difference
+method in angle with the diamond difference
 approximation in space.
 
 For the transport benchmarks, the angular dependence is expanded 
@@ -828,7 +828,7 @@ are only symmetric at beginning-of-life (and that is on the order
 of 1/3 of the core fuel), and even then, only at cold zero power.  Once
 any realistic treatment of temperature feedback is considered, all 
 symmetry is lost, and hence there is essentially no insight to be gained 
-from artificially reducing our problem size.
+from artificially reducing the problem size.
 
 Unless stated otherwise, 
 convergence is defined by $||\oper{f}||_2 \leq 10^{-7}$, where
@@ -855,19 +855,16 @@ one quantity may not be an accurate measure of the error in some
 other quantity.  To illustrate, the assembly powers for the 2-D IAEA 
 problem were computed for spatial orders of 0 through 4 subject to 
 a tolerance on the residual norm ranging from $10^{-1}$ down to $10^{-12}$.
-The relative eigenvalue error for each order as a function of 
-tolerance is shown in Figure \ref{fig:tolerance_study_eigenvalue}, 
-while the 
-maximum relative assembly error for each order is shown in 
-Figure \ref{fig:tolerance_study_power}.  The latter figure
-indicates that the {\it convergence} error in assembly powers 
+The relative eigenvalue error  and maximum relative assembly error for each
+order as functions of 
+tolerance are shown in Figure \ref{fig:tolerance_study}.
+The results indicate that the {\it convergence} error in assembly powers 
 for a  given order is vanishingly small compared to 
 the {\it truncation} error due to the order for tolerances
 below about $10^{-6}$.  A similar trend appears for the eigenvalue 
-error, but for even looser tolerances.  For the subsequent diffusion 
+error, but for even looser tolerances.  For all subsequent  
 analyses, a tolerance of $10^{-7}$ was selected to ensure only 
 truncation errors affect the solutions observed.
-
 
 \begin{figure*}[htbp]
   \centering
@@ -888,13 +885,13 @@ truncation errors affect the solutions observed.
     \label{fig:tolerance_study_power}                 
   \end{subfigure}
   \caption{Absolute relative eigenvalue 
-          (\ref{fig:diffusion_order_study_eigenvalue}) and 
+          (\ref{fig:tolerance_study_eigenvalue}) and 
           absolute maximum relative 
           assembly power
-           (\ref{fig:diffusion_order_study_power})
+           (\ref{fig:tolerance_study_power})
           errors for the 2-D IAEA problem as functions of the
           residual norm tolerance for several spatial orders.}
-  \label{fig:diffusion_order_study}
+  \label{fig:tolerance_study}
 \end{figure*}
 
 \subsubsection{Orders and Accuracy}
@@ -903,14 +900,13 @@ truncation errors affect the solutions observed.
 While a detailed discussion of basis accuracies is outside the 
 present scope, it is illustrative to assess convergence 
 of the DLP spatial basis applied to the diffusion benchmarks.  
-Figure \ref{fig:diffusion_order_study_power}
+Figure \ref{fig:diffusion_order_study}
  shows the maximum relative error in the assembly 
-powers as a function of spatial order, while Figure 
-\ref{fig:diffusion_order_study_eigenvalue} does 
-the same for the absolute relative error in the eigenvalue.  For the 
+powers and absolute relative eigenvalue error as functions of spatial order.
+For the 
 3-D IAEA problem, two cases are performed.  The first uses a full 
 expansion of order $m$ in both spatial variables.  That means on a given 
-side, the two-dimensional expansion is equivalent to the form 
+side the two-dimensional expansion is equivalent to the form 
 \begin{equation}
  F(x, y) \approx a + bx + cy + d x^2 + e xy + f y^2 + \ldots \, .
 \end{equation}
@@ -922,8 +918,7 @@ limits the sum of the $x$ and $y$ orders \cite{forget2006tdh}.  In this case,
 where the cross term $e xy$ has been omitted.  Previous experience 
 has demonstrated these cross terms, particularly at high order, have 
 little value, and this is demonstrated quite strongly in the results
-of Figures \ref{fig:diffusion_order_study_eigenvalue} 
-and \ref{fig:diffusion_order_study_power}.
+of Figure \ref{fig:diffusion_order_study}.
 
 % Say something about the reduction in unknowns, the total node count, 
 % etc.
@@ -933,25 +928,6 @@ For all the problems, a fourth order expansion yields assembly
 and eigenvalue errors on the range of a few pcm.  Consequently, a fourth 
 order expansion was selected for use in comparing the solvers in 
 subsequent performance analyses.
-
-% \begin{figure}[ht]
-%     \centering
-%     \includegraphics[keepaspectratio, width = 3.5 in]
-%                     {diffusion_order_study_eigenvalue}
-%     \caption{Absolute relative eigenvalue error as 
-%              a function of spatial order.}
-%     \label{fig:diffusion_order_study_eigenvalue}
-% \end{figure}
-% 
-% \begin{figure}[ht]
-%     \centering
-%     \includegraphics[keepaspectratio, width = 3.5 in]
-%                     {diffusion_order_study_power}
-%     \caption{Maximum absolute relative assembly power error as a function of 
-%              spatial order.}
-%     \label{fig:diffusion_order_study_power}
-% \end{figure}
-
 
 \begin{figure*}[htbp]
   \centering
@@ -989,25 +965,24 @@ to solve the inner $\lambda$-eigenvalue problem, including the
 power (PI), Krylov-Schur (KS), and explicitly-restarted Arnoldi 
 methods (ERAM), each of 
 which is implemented in SLEPc \cite{slepc}.  Because convergence of the 
-outer Picard iteration is somewhat sensitive to the inner convergence, 
+outer Picard iteration is  sensitive to the inner convergence, 
 the tolerance $\tau_{\lambda}$ of the inner problem was set 
 more tightly at $10^{-10}$.  
 
 Table \ref{tbl:diffusion_picard_inner_study} 
-provides the number of inner and outer iterations and total
-computational time for each method for each of the diffusion problems.
-The computational time is further divided into the global (response matrix)
-time and the response (diffusion solver) time.  For all problems, 
+provides the number of inner and outer iterations,  total
+computational time, and response generation time 
+for each method for each of the diffusion problems.
+ For all problems, 
 KS outperforms ERAM by a small margin and PI by a factor of two 
 or three.  Initial studies demonstrated that IRAM (not included 
 by default with SLEPc) performs at about the same level 
 as KS \cite{roberts2012ksi}. Were the tolerance smaller, the improvement 
 of KS over PI would 
-likely diminish, and were the tolerance greater, KS would likely perform 
-increasingly better.  
+likely diminish, and contrarily were the tolerance greater.
 
 For the three 2-D problems, the response time constitutes a significant 
-portion of the total computational time, range from about a third to half
+portion of the total computational time, ranging from about a third to half
 depending on the solver.  For the 3-D IAEA problem, the global solver
 becomes the dominant cost.  This makes some sense, as the diffusion 
 problems underlying the response generation are quite cheap compared to 
@@ -1276,13 +1251,12 @@ For Newton's method, two schemes were examined.  The first is the same
 as used for testing the preconditioning and is based on a Jacobian with 
 $k$-derivatives computed using a finite difference 
 with a $\Delta k = 10^{-8}$.
-The second scheme 
-lags the $k$ evaluation, using the last iterate 
+The second scheme uses the two most recent $k$ values
 for computing $\Delta k$.  This results in a larger $\Delta k$ and hence 
 less accurate finite difference.  However, the accuracy of the finite 
 difference has no observable effect on the convergence, 
 and for all four problems,
-the lagged approach has the same number of outer iterations as the 
+this approach yields the same number of outer iterations as the 
 regular approach but reduces the number of $k$ evaluations by nearly half.
 
 Steffensen's method provides the fastest convergence with respect to 
@@ -1380,11 +1354,11 @@ Chebyshev-$\psi$ &    3  &     0.04   &     2.42   &     6.43   &     0.35   &  
 
 The same set of global solvers used in 
 Section \ref{sec:global_solver_diffusion} were also applied 
-to the 2-D C5G7 problem.  In this case, parallel computation 
-was necessary, and 64 processes were used throughout with a 
-single process for the global balance problem.
+to the 2-D C5G7 problem.  In this case, 64 processes were used 
+for response generation while a
+single process was used for the outer ($\lambda$-eigenvalue) problem.
 
-Table \ref{tbl:c5g7_outer_study} provides the wall time,
+Table \ref{tbl:c5g7_outer_study} provides the wall time
 as well as the total and response time summed over all 
 processes.  Included also are the number of inner iterations,
 outer iterations, and $k$ evaluations.  Newton's method with the 
@@ -1441,7 +1415,7 @@ method for the diffusion problems.
 
 \subsection{3-D Takeda}
 
-The 3-D Takeda benchmark is an old and rather simple benchmark, but it
+The 3-D Takeda benchmark is a rather simple benchmark, but it
 allows us to examine in more depth the convergence properties of 
 the basis sets.  The model consists of three homogeneous regions using 
 a two group approximation.  For this study, the model in the ``rods in''
@@ -1454,16 +1428,14 @@ Figures \ref{fig:takeda_order_study_eigenvalue_error} and
 relative error in the eigenvalue and the maximum 
 absolute relative error in the nodal powers as a function of angular 
 order for several spatial orders.  Order reduction was used in 
-both space and angle Using order reduction
-in both space and angle see 
-Section \ref{sec:diffusion_order_accuracy}). It is readily apparent little 
+both space and angle. It is readily apparent little 
 is gained with increasing angular order when the spatial order is limited 
 to zero.  For higher spatial orders, an increasing angular order 
 yields a monotonically decreasing error for both $k$ and the nodal 
 powers.  The conservative basis outperforms the DLP variants, yielding
 nearly sub-1\% nodal errors for a third order angular expansion and 
 spatial orders greater than 1.  DLP-$J$ yields slightly 
-better nodal powers than DLP-$\psi$ at higher orders, but yields higher 
+better nodal powers than DLP-$\psi$ at higher orders but yields higher 
 $k$ errors for all orders. 
 
 For all the bases, a significant trend is that spatial orders above 
@@ -1560,7 +1532,7 @@ few $k$ evaluations but with a slightly higher overall cost.
 \label{sec:conclusion}
 
 Based on the results for both the diffusion and transport problems, Picard 
-iteration with exponential extrapolation appears generally to be the most
+iteration with exponential extrapolation appears to be the most
 efficient of the methods, yielding minimum numbers of $k$ evaluations 
 while providing the lowest global solver overhead.  However, the 
 extrapolation is based on $\lambda$ converging to unity, and because this 
@@ -1575,7 +1547,7 @@ that of the extrapolated Picard iteration.  Even so, the efficacy and
 simplicity of the Picard iteration suggests that care should be taken to 
 select a conservative basis leading to $\lambda = 1$ upon convergence.
 
-Ultimately, our goal is to use ERMM in production level analyses, 
+Ultimately, the goal is to use ERMM in production level analyses, 
 and to get there, significant challenges remain.  Chief among these 
 remains the shear number of responses required for realistic 
 modeling.  The solvers studied that reduce the number of $k$ evaluations 

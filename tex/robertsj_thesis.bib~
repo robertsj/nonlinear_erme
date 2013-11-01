@@ -204,6 +204,17 @@
   publisher = {Elsevier}
 }
 
+
+
+@ARTICLE{roberts2014dpm,
+  author = {Roberts, J. A. and Forget, B.},
+  title = {{Multigroup Diffusion Preconditioners for Multiplying 
+            Fixed Source Transport Problems}},
+  journal = {Submitted to Journal of Computational Physics},
+  year = {2013}
+}
+
+
 @INPROCEEDINGS{roberts2011ser,
   author = {Roberts, J. A. and Forget, B.},
   title = {{Solving Eigenvalue Response Matrix Equations using Jacobian-Free
@@ -873,7 +884,7 @@ rinciple.}
 
 @TechReport{slepc-str-4,
    author  = "V. Hernandez and J. E. Roman and A. Tomas and V. Vidal",
-   title   = "Arnoldi Methods in SLEPc",
+   title   = {{Arnoldi Methods in SLEPc}},
    number  = "STR-4",
    institution = "Universidad Polit\'ecnica de Valencia",
    note    = "Available at http://www.grycap.upv.es/slepc",
@@ -882,7 +893,7 @@ rinciple.}
 
 @TechReport{slepc-str-7,
    author  = "V. Hernandez and J. E. Roman and A. Tomas and V. Vidal",
-   title   = "Krylov-Schur Methods in SLEPc",
+   title   = {{Krylov-Schur Methods in SLEPc}},
    number  = "STR-7",
    institution = "Universidad Polit\'ecnica de Valencia",
    note    = "Available at http://www.grycap.upv.es/slepc",
