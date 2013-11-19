@@ -793,6 +793,9 @@ G. Schulz, Iterative Berechnung der Reziproken matrix, Z. Angew. Math. Mech. 13
 
 
 @TECHREPORT{anl1977benchmark,
+  title = {{Argonne Code Center: Benchmark Problem Book}},
+  number = {ANL-7416 Supplement 2},
+  year =  {1977},
   author = {Argonne Code Center: Benchmark Problem Book. Technical Report ANL-7416
         Supplement 2, Argonne National Laboratory, 1977.}
 }
@@ -860,16 +863,6 @@ rinciple.}
 }
 
 
-@Article{petsc,
-   author  = {Someone},
-   title   = {{{PETSc}: A Scalable and Flexible Toolkit for the Solution of Eigenvalue Problems}},
-   journal = {ACM Transactions on Mathematical Software},
-   volume  = {31},
-   number  = "3",
-   pages   = "351--362",
-   month   = sep,
-   year    = "2005"
-}
 
 @Article{slepc,
    author  = {Vicente Hernandez and Jose E. Roman and Vicente Vidal},
@@ -1026,15 +1019,16 @@ rinciple.}
   publisher={Taylor \& Francis}
 }
 
-@InProceedings{petsc-efficient,
+@InProceedings{petsc,
             Author = "Satish Balay and William D. Gropp and Lois Curfman McInnes and Barry F.  Smith",
-            Title = "Efficient Management of Parallelism in Object Oriented Numerical Software Libraries",
+            Title = {{Efficient Management of Parallelism in Object Oriented Numerical Software Libraries}},
             Booktitle = "Modern Software Tools in Scientific Computing",
             Editor = "E. Arge and A. M. Bruaset and H. P. Langtangen",
             Pages = "163--202",
             Publisher = "Birkh{\"{a}}user Press",
             Year = "1997"
 }
+
 
 @article{carew1999upw,
   title={{Uniform Positive-Weight Quadratures for Discrete Ordinate Transport Calculations}},
