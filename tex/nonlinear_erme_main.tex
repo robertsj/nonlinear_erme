@@ -51,35 +51,28 @@
 \begin{abstract}
 %% Text of abstract
 
-This paper presents new algorithms for use in 
-the eigenvalue response matrix method (ERMM) for reactor 
-eigenvalue problems.  ERMM spatially decomposes a
- domain into independent nodes linked via
- boundary conditions approximated as 
-truncated orthogonal expansions, the coefficients of which are  
-response functions. 
-In its simplest form, ERMM consists of a two-level 
-eigenproblem: an outer Picard iteration updates the $k$-eigenvalue 
-via balance,
+This paper presents new algorithms for use in the eigenvalue response matrix 
+method (ERMM) for reactor eigenvalue problems.  ERMM spatially decomposes a
+domain into independent nodes linked via boundary conditions approximated as 
+truncated orthogonal expansions, the coefficients of which are response 
+functions. In its simplest form, ERMM consists of a two-level eigenproblem: 
+an outer Picard iteration updates the $k$-eigenvalue via balance,
 while the inner $\lambda$-eigenproblem imposes neutron balance between nodes.  
 Efficient methods are developed for solving the inner $\lambda$-eigenvalue 
-problem within the outer Picard iteration. 
- Based on results from  
+problem within the outer Picard iteration. Based on results from  
 several diffusion and transport benchmark models, it was found that 
-the Krylov-Schur method 
-applied to the $\lambda$-eigenvalue problem reduces Picard solver 
-times (excluding response generation) by a factor of 2--5. 
-Furthermore, alternative methods including Picard acceleration schemes, Steffensen's 
-method, and Newton's method are developed.  These approaches can 
-yield faster $k$ convergence and a need for fewer
- $k$-dependent response function evaluations,
-important because response computation is the 
-largest cost for many problems.  It was found that
-accelerating Picard iteration yields a reduction of 2--3 in total time 
-compared to the unaccelerated case
-for problems dominated by response generation but that 
-Newton's method may provide nearly the same performance with improved 
-robustness.
+the Krylov-Schur method applied to the $\lambda$-eigenvalue problem reduces 
+Picard solver times (excluding response generation) by a factor of 2--5. 
+Furthermore, alternative methods, including Picard acceleration schemes, 
+Steffensen's method, and Newton's method, are developed in this paper.  
+These approaches often yield faster $k$-convergence and a need for fewer 
+$k$-dependent response function evaluations, which is important because 
+response generation is often the primary cost for problems using responses 
+computed online (i.e., not from a precomputed database). 
+Accelerated Picard iteration was found to reduce total computational 
+times by 2--3 compared to the unaccelerated case for problems dominated by 
+response generation.  In addition, Newton's method was found to provide 
+nearly the same performance with improved robustness.
 \end{abstract}
 
 \begin{keyword}
