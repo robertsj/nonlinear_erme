@@ -124,12 +124,14 @@ These coefficients are then represented in vector form as
 and using these together with Eq. \ref{eq:responsefunction} yields
 the nodal balance equation
 \begin{equation}
-    \mathbf{J}_{i+} = \left [\begin{array}{c}
-      j^0_{i1_+}    \\
-      j^1_{i1_+}    \\
-      \vdots        \\
-    \end{array} 
-    \right ] = \left [\begin{array}{ccc}
+    \mathbf{J}_{i+} = 
+%     \left [\begin{array}{c}
+%       j^0_{i1_+}    \\
+%       j^1_{i1_+}    \\
+%       \vdots        \\
+%     \end{array} 
+%     \right ] =
+     \left [\begin{array}{ccc}
        r^{01}_{i01} &  r^{11}_{i01}  &  \cdots   \\
        r^{01}_{i11} &  r^{11}_{i11}  &  \cdots   \\
                     &                &  \ddots   \\
@@ -185,7 +187,7 @@ A fundamental shortcoming of this early work is what seems to
 be an assumed value (unity) of the $k$-eigenvalue when evaluating responses.
 Typically $k \approx 1$ for nuclear reactors, so the errors observed 
 were only tens of pcm, which may have been deceptively small
-and not representive of more general cases.
+and not representative of more general cases.
 In the later 2-D analysis \cite{aoki1965arm}, the results compared 
 favorably to fine mesh diffusion calculations.
 
@@ -208,7 +210,7 @@ models with heterogeneous nodes were studied.
 
 In addition to methods based on diffusion theory, previous work applied 
 transport theory for generating responses. Pryor et al. used 
-a hybrid stochastic-determinstic approach based on
+a hybrid stochastic-deterministic approach based on
 Monte Carlo and the collision probability 
 method to generate responses \cite{pryor1973rmm, pryor1975rdr,
 sicilian1975atr}.  Their work is unique in its definition
@@ -303,7 +305,7 @@ In the past work on ERMM, responses were precomputed as a function of
 $k$ and interpolated as needed.  In many cases, clever use of symmetry 
 can reduce the amount of required data.  For benchmark problems, this
 reduction is helpful, but as the effects of thermal feedback are included, 
-each node becomes unique and, usually, assymetric.  As such, precomputation 
+each node becomes unique and, usually, asymmetric.  As such, precomputation 
 of responses would require inclusion of dependence on several variables
 in addition to $k$.
 There seems at this time no completely satisfactory way to parameterize 
@@ -423,8 +425,8 @@ of a Krylov subspace of dimension $n$,
 defined for an $m \times m$ operator $\oper{A}$ as
 \begin{equation}
  \mathcal{K}(n,x_0) \equiv \text{span} 
-     \{x_0,\, \oper{A}x_0,\, \oper{A}^2x_0,\, 
-         ,\ldots,\,, \oper{A}^{m-1}x_0 \} \, , 
+     \{x_0,\, \oper{A}x_0,\, \oper{A}^2x_0 , \, 
+        \ldots , \, \oper{A}^{m-1}x_0 \} \, , 
  \label{eq:krylovsubspace}
 \end{equation}
 for some initial, possibly random, vector $x_0$.  The fundamental 
@@ -478,7 +480,7 @@ method tends to be more efficient than other implicitly-restarted
 algorithms \cite{slepc}. 
 
 %----------------------------------------------------------------------------%
-\section{Acceleration $k$-convergence}
+\section{Solving the $k$-Eigenvalue Problem}
 \label{sec:outer}
 
 The convergence properties of the fixed-point iteration
@@ -605,10 +607,12 @@ unless very small tolerances ($\approx 10^{-9}$) are used
 for solving the $\lambda$-eigenvalue problem \cite{roberts2012ksi}.
 Furthermore,  once the responses are evaluated for the initial
 guess, each successive Steffensen iteration requires two response 
-evaluations.  In general, the savings gained by second order convergence 
-may or may not outweigh the cost of additional evaluations depending 
-on the problem.
-
+evaluations. 
+The savings gained by second order convergence 
+may or may not outweigh the cost of additional evaluations, depending 
+on the problem.   However,  Steffensen's method 
+is likely ideal when responses are inexpensive to 
+compute or to interpolate from a precomputed database.
 
 %----------------------------------------------------------------------------%
 \subsection{Newton Methods}
@@ -817,8 +821,8 @@ from artificially reducing the problem size.
 Unless stated otherwise, 
 convergence is defined by $||\oper{f}||_2 \leq 10^{-7}$, where
 $\oper{f}$ is the nonlinear residual of Eq. \ref{eq:residual}.
-This criterion makes comparison of Picard and Newton methods much 
-more straightforward.   For the diffusion and Takeda transport 
+This criterion makes comparison of Picard and Newton methods  
+straightforward.   For the diffusion and Takeda transport 
 benchmarks, {\tt Detran} was used to compute the reference solution, 
 while for the 2-D C5G7, reference results from the original 
 documentation were used.
@@ -971,11 +975,11 @@ problems underlying the response generation are inexpensive compared to
 the much larger global problem.
 
 \begin{table}[ht] 
- \begin{center} 
- 
- \begin{threeparttable}
 
- 
+ \begin{center} 
+  \caption{Picard inner solver comparison for diffusion problems.} 
+ \label{tbl:diffusion_picard_inner_study} 
+ \begin{threeparttable}
  \begin{tabular}{ccccc} 
  \toprule 
   solver & time \tnote{a} & r. time \tnote{b} & inners & outers \\
@@ -1018,8 +1022,7 @@ the much larger global problem.
  
  
  \end{center} 
- \caption{Picard inner solver comparison for diffusion problems.} 
- \label{tbl:diffusion_picard_inner_study} 
+
 \end{table} 
 
 
@@ -1072,36 +1075,39 @@ included for study with the remaining algorithms.
 
 \subsubsection{Newton Variants}
 
-For Newton's method, an unpreconditioned 
-and ILU-preconditioned variant were studied.  The ILU preconditioner 
-was based on an explicit Jacobian constructed either once, using the 
-initial responses, or every iteration, using the updated responses.  
+For Newton's method, unpreconditioned 
+and preconditioned variants using ILU were studied.  The ILU preconditioner
+is based on an explicit Jacobian constructed either once, using 
+the initial responses, or every iteration, using the updated responses.  
 In all cases, the underlying linear solves were performed with GMRES(30),
 and the ILU preconditioner was applied with 0 through 2 levels.
 
 Table \ref{tbl:diffusion_newton_pc_study} provides results for the 
-2-D IAEA and Koeberg problems using a fourth order spatial 
-expansion and $4\times 4$ nodes per assembly.  This yields a 
-somewhat larger problem that better illustrates differences 
-in the preconditioner; the preconditioners offer no benefit 
-for the single node case.  The problems have 184962 and 
-369922 unknowns, respectively.
+2-D IAEA and Koeberg problems with a fourth order spatial 
+expansion and $4\times 4$ nodes per assembly, corresponding to
+184962 and 369922 unknowns, respectively.
+Somewhat larger problems were used to highlight differences between
+the preconditioners because the preconditioners offered no benefit 
+for the single node case.
 
-For both problems, ILU(0) preconditioning offers the best performance
-with respect to time despite higher levels yielding lower numbers of 
-inner iterations.
-Interestingly, not updating the preconditioner has no discernible effect 
-on the iteration count and yields lower computational times than when 
-the preconditioner is updated at every iteration.  This can be explained 
-by noting that the majority of the Jacobian is relatively insensitive 
-to small changes in $k$.  Given the initial guess (unity in these cases)
+For both problems, ILU(0) preconditioning offered the best performance
+with respect to time, although higher preconditioner levels 
+led to lower numbers of inner iterations.
+Failure to update the preconditioner had no discernible effect 
+on the iteration count and yielded lower computational times than when 
+the preconditioner was updated at every iteration.  This can be explained 
+by noting that a majority of the Jacobian is relatively insensitive 
+to small changes in $k$.  Given the initial guess for $k$ 
+(unity in these cases)
 is expected to be pretty close to the final answer, the original Jacobian
-should be pretty close to its final value.
-
+should be nearly equal to its final value.
 
 \begin{table}[ht] 
- \begin{center} 
  
+ \begin{center} 
+  \caption{Newton solver ILU preconditioner comparison for diffusion 
+          problems.} 
+ \label{tbl:diffusion_newton_pc_study}
  \begin{threeparttable}
 
  \begin{tabular}{ccccc} 
@@ -1141,30 +1147,32 @@ should be pretty close to its final value.
  
  
  \end{center} 
- \caption{Newton solver ILU preconditioner comparison for diffusion 
-          problems.} 
- \label{tbl:diffusion_newton_pc_study} 
+
 \end{table} 
 
 \subsubsection{Comparing Picard, Steffensen, and Newton}
 \label{sec:global_solver_diffusion}
 
-To compare the methods, several metrics are of interest.  Ultimately, the 
-wall clock time is of most importance.  However, the number of iterations 
+Several metrics can be used to compared the outer solvers. Ultimately, 
+wall clock time is most important in practice.  However, the number of 
+iterations 
 of each method, both outer and inner, is also indicative of the 
-algorithm performance independent of any particular implementation.
+algorithm performance, independent of any particular implementation.
 These data are provided in Table \ref{tbl:diffusion_outer_study} 
 for each of the benchmarks. A fourth
-order spatial expansion  was used throughout, with order reduction being 
+order spatial expansion  was used for all problems, with order reduction 
 applied to the 3-D IAEA problem.  For the 2-D problems, a $4\times 4$ 
-node-per-assembly model is used, while for the 3-D IAEA problem,  
-a single node is used.  This corresponds to 184962 unknowns for the 
+node-per-assembly model was used, while for the 3-D IAEA problem,  
+a single node was used, corresponding to 184962 unknowns for the 
 2-D IAEA and Biblis problems, 369922 for the Koeberg problem, 
 and 988382 for the 3-D IAEA problem.
 
-\begin{table}[!] 
+\begin{table*}[ht] 
 
  \begin{center} 
+ 
+ \caption{Outer solver comparison for diffusion problems.} 
+ \label{tbl:diffusion_outer_study} 
  
  \begin{threeparttable}
  \begin{tabular}{cccccc} 
@@ -1220,31 +1228,28 @@ and 988382 for the 3-D IAEA problem.
  
  \end{center} 
  
- \caption{Outer solver comparison for diffusion problems.} 
- \label{tbl:diffusion_outer_study} 
- 
-\end{table} 
+\end{table*} 
 
 %  \footnote{fine finite difference for $k$}
 %  \footnote{coarse finite difference for $k$}
 
-The solvers tested included Picard (P) with and without exponential 
+The tested solvers include Picard (P) with and without exponential 
 extrapolation (exp), Steffensen's method (S), and Newton's method (N).
 For Newton's method, two schemes were examined.  The first is the same 
 as used for testing the preconditioning and is based on a Jacobian with 
 $k$-derivatives computed using a finite difference 
 with a $\Delta k = 10^{-8}$.
 The second scheme uses the two most recent $k$ values
-for computing $\Delta k$.  This results in a larger $\Delta k$ and hence 
-less accurate finite difference.  However, the accuracy of the finite 
-difference has no observable effect on the convergence, 
+for computing $\Delta k$, resulting in a larger $\Delta k$ and, therefore, 
+a less accurate finite difference.  However, the accuracy of the finite 
+difference did not affect the convergence, 
 and for all four problems,
-this approach yields the same number of outer iterations as the 
-regular approach but reduces the number of $k$ evaluations by nearly half.
+the coarse difference yielded the same number of outer iterations as the 
+fine difference while reducing the number of $k$ evaluations by nearly half.
 
-Steffensen's method provides the fastest convergence with respect to 
-outer iterations, but it relies on two $k$ evaluations per outer iteration.
-Picard with exponential extrapolation yields the lowest computational 
+Steffensen's method provided the fastest convergence with respect to 
+outer iterations, but it requires two $k$ evaluations per outer iteration.
+Picard with exponential extrapolation yielded the lowest computational 
 time and the fewest $k$ evaluations.  While Newton's method with a 
 coarse $\Delta k$ is competitive with respect to $k$ evaluations, the 
 overhead of solving the linear systems is higher than the cost of the 
@@ -1254,10 +1259,11 @@ $\lambda$-eigenvalue problem in the Picard iteration.
 
 \subsubsection{Comments}
 
-From the diffusion analyses, it appears that Picard iteration using 
-KS for the inners and the exponential extrapolation for accelerating 
-the outers yields the best performance.  The Newton methods perform 
-about as well with respect to $k$ evaluations, but the cost of 
+Based on these diffusion analyses, Picard iteration with
+KS for the inners and exponential extrapolation for accelerating 
+the outers represents an ideal ERMM solver.  The Newton methods yield 
+perform 
+nearly as well with respect to $k$ evaluations, but the cost of 
 applying the method is higher per iteration than the Picard variants,
 implying further work on preconditioning the inner solves is warranted.
 
@@ -1266,38 +1272,49 @@ implying further work on preconditioning the inner solves is warranted.
 The 2-D C5G7 transport benchmark is a small quarter core 
 model consisting of two UO$_2$ assemblies and two MOX
 assemblies, all surrounded by an assembly-width reflector.  The model 
-is based on 7 group data.
+is based on 7 group data and homogenization of the fuel and cladding.
  
 \subsubsection{Orders and Accuracy}
  
 To assess the accuracy of the response schemes available for transport 
 problems, the C5G7 benchmark was solved using a variety of 
-angular bases. Because the 
-spatial mesh is not exactly uniform, the DLP spatial expansion does
-not converge as quickly for the C5G7 problem as for the 
+angular bases. Because a uniform spatial mesh was 
+not used, the DLP spatial expansion converged more slowly for 
+the C5G7 problem than for the 
 uniformly-meshed diffusion problems.  For all cases, 
 the response transport calculations were converged to 
 a relative residual norm of $10^{-8}$, and the outer calculation was 
 converged to a nonlinear residual norm of $10^{-7}$.
 
-Figure \ref{tbl:c5g7_order_convergence} shows the convergence of 
+Table \ref{tbl:c5g7_order_convergence} shows the convergence of 
 the eigenvalue and pin power errors as a function of space-angle 
-order.  By third order, the conservative basis appears to approach 
-a very limited improvement.  This is most likely due to the DLP 
-spatial basis used; since the mesh is not uniform, a DLP expansion is 
-not conservative, and low order expansions cannot be expected to 
-yield good results.  Since both the DLP and Chebyshev bases yield 
-maximum relative pin power errors of just over 2\%, it appears 
-the spatial expansion becomes the dominant source of error.  These 
-results are in contrast to those cited in Ref. \cite{roberts2014psb}, 
-for which a full order spatial basis helped isolate just the 
-error due to expanding in angle.  This indicates that a full 
-implementation and systematic study of the new spatial bases 
-would potentially be of great value.
+order.  By third order, the conservative basis yields
+very limited improvement, most likely due to the DLP 
+spatial basis used.  A nonuniform mesh yields a nonconservative
+DLP expansion that is inaccurate at low orders compared to a
+conservative expansion.
+Table \ref{tbl:c5g7_order_convergence} shows that both the
+DLP and Chebyshev bases yield
+maximum relative pin power errors of slightly more than 2\%.
+These results are in contrast to results reported in 
+Ref. \cite{roberts2014psb}, 
+which used a full order spatial basis to eliminate spatial errors and
+showed that a conservative Chebyshev basis significantly outperforms a
+DLP basis.
+Consequently, the present results indicate that
+spatial expansion errors are dominant by second or third order,
+and, therefore, a full 
+implementation and systematic study of new spatial bases 
+is warranted.
 
 \begin{table*}[ht] 
- \begin{center} 
  
+\begin{center} 
+
+ \caption{2-D C5G7 order convergence.  All errors in \%, with 
+          reference results from \Detran on same mesh.} 
+ \label{tbl:c5g7_order_convergence} 
+
   \begin{threeparttable}
  \begin{tabular}{ccrrrrrr} 
  \toprule 
@@ -1327,40 +1344,44 @@ Chebyshev-$\psi$ &    3  &     0.04   &     2.42   &     6.43   &     0.35   &  
  \end{threeparttable}
  
  \end{center} 
- 
- \caption{2-D C5G7 order convergence.  All errors in \%, with 
-          reference results from \Detran on same mesh.} 
- \label{tbl:c5g7_order_convergence} 
+
 \end{table*} 
 
 \subsubsection{Solver Comparison}
 
-The same set of global solvers used in 
+The same global solvers used in 
 Section \ref{sec:global_solver_diffusion} were also applied 
 to the 2-D C5G7 problem.  In this case, 64 processes were used 
-for response generation while a
+for response generation, while a
 single process was used for the outer ($\lambda$-eigenvalue) problem.
 
-Table \ref{tbl:c5g7_outer_study} provides the wall time
+Table \ref{tbl:c5g7_outer_study} provides the wall time,
 as well as the total and response time summed over all 
-processes.  Included also are the number of inner iterations,
-outer iterations, and $k$ evaluations.  Newton's method with the 
-coarse $k$ derivative yields the best performance.  Surprisingly,
-using the fine $k$ derivative requires more outer iterations and 
-hence significantly greater time.  Steffensen's method, as for the 
-diffusion problems, requires the fewest outer iterations but at the 
+processes.  In addition, the number of inner iterations,
+outer iterations, and $k$ evaluations are included. Newton's method with the 
+coarse $k$ derivative yielded the best performance, with a wall 
+time of $1.09\cdot 10^3$ seconds, total 
+time of $6.97\cdot 10^4$ seconds (summed over 
+all processes), and a solver (excluding response generation) time of 
+$34$ seconds. Use of 
+the fine $k$ derivative required more outer iterations and, consequently, 
+significantly more time.  Steffensen's method required the 
+fewest outer iterations but at the 
 cost of more $k$ evaluations.  Standard Picard iteration 
-performs reasonably well, but the extrapolated Picard iteration
-fails miserably.  However, this is {\it completely expected}: since 
-the spatial basis is not conservative,  $\lambda$ does not 
-tend toward unity, and hence extrapolation does not apply.  This 
-highlights a significant value in selecting a conservative basis, 
-since the extrapolated Picard iteration was the best performing 
+readily converged, but extrapolation
+failed miserably.  However, this failure is {\it completely expected}: 
+the spatial basis is not conservative, so $\lambda$ does not 
+tend toward unity, and, hence, extrapolation does not apply.  This 
+highlights significant value in selecting a conservative basis, 
+because the extrapolated Picard iteration was the best performing 
 method for the diffusion problems.
 
 \begin{table*}[ht] 
  \begin{center} 
- 
+ \caption{Outer solver comparison for 2-D C5G7 problem with first order expansions.
+          Picard with exponential extrapolation fails due to the nonconservative spatial 
+          basis, \ie $\lambda \ne 1$.} 
+ \label{tbl:c5g7_outer_study} 
   \begin{threeparttable}
  \begin{tabular}{ccccccc} 
  \toprule 
@@ -1390,19 +1411,16 @@ method for the diffusion problems.
  \end{threeparttable}
  
  \end{center} 
- \caption{Outer solver comparison for 2-D C5G7 problem with first order expansion.
-          Picard with exponential extrapolation fails due to the nonconservative spatial 
-          basis, \ie $\lambda \ne 1$.} 
- \label{tbl:c5g7_outer_study} 
+
 \end{table*} 
 
 \subsection{3-D Takeda}
 
-The 3-D Takeda benchmark is a rather simple benchmark, but it
-allows us to examine in more depth the convergence properties of 
+The 3-D Takeda benchmark is a simple benchmark, but it
+allows for in-depth examination of the convergence properties of 
 the basis sets.  The model consists of three homogeneous regions using 
-a two group approximation.  For this study, the model in the ``rods in''
-configureation was used.
+a two group approximation in energy.  For this study, the the ``rods in''
+configuration was used.
 
 \subsubsection{Order Convergence}
 
@@ -1411,21 +1429,23 @@ Figures \ref{fig:takeda_order_study_eigenvalue_error} and
 relative error in the eigenvalue and the maximum 
 absolute relative error in the nodal powers as a function of angular 
 order for several spatial orders.  Order reduction was used in 
-both space and angle. It is readily apparent little 
-is gained with increasing angular order when the spatial order is limited 
-to zero.  For higher spatial orders, an increasing angular order 
-yields a monotonically decreasing error for both $k$ and the nodal 
-powers.  The conservative basis outperforms the DLP variants, yielding
+both space and angle.  Very little improvement was observed
+with increasing angular order for a spatial order of zero.  
+For higher spatial orders, an increasing angular order 
+yielded a monotonically decreasing error for both $k$ and the nodal 
+powers.  The conservative basis outperformed the DLP variants, yielding
 nearly sub-1\% nodal errors for a third order angular expansion and 
-spatial orders greater than 1.  DLP-$J$ yields slightly 
-better nodal powers than DLP-$\psi$ at higher orders but yields higher 
+spatial orders greater than one.  DLP-$J$ yielded slightly 
+better nodal powers than DLP-$\psi$ at higher orders but higher 
 $k$ errors for all orders. 
 
-For all the bases, a significant trend is that spatial orders above 
-2 yield diminishing returns; that is, the most consistent improvement
-over all angular orders and bases is a shift from first to second order 
-in space.  This is reasonable because the nodes are homogeneous and 
-boundary quantities should therefore be relatively smooth functions of space.
+For all angular bases, a significant trend observed was the markedly
+diminishing returns for spatial orders above 
+two.  In other words, the most consistent improvement observed,
+irrespective of angular order and basis, was obtained by shifting 
+from first to second order in space.  This trend is reasonable because 
+the nodes are homogeneous, and boundary quantities should, therefore, 
+be relatively smooth functions of space.
 
 \begin{figure*}[htbp]
   \centering
@@ -1458,23 +1478,26 @@ boundary quantities should therefore be relatively smooth functions of space.
 
 \subsubsection{Solver Comparison}
 
-The same set of solvers as used for the diffusion problems 
-and the 2-D C5G7 problem were applied to the Takeda problem. A second 
+The same solvers used for the diffusion  
+and 2-D C5G7 problems were applied to the Takeda problem. A second 
 order spatial expansion with a third order angular expansion in the 
-azimuth and polar variables was used.  Order reduction was applied to both 
-the spatial and angular terms.  The problem was run on 64 processors, with 
+azimuth and polar variables was used.  Order reduction was applied to 
+the spatial and angular terms.  The problem was run with 64 processes, with 
 one process for the global problem.  Table \ref{tbl:takeda_outer_study} 
 provides the wall time, total time summed over all processors, and the 
 total response function time summed over all processors.  
 
 Similar to the diffusion results, the extrapolated Picard iteration 
-proves to be the most efficient of the solvers studied.  
+proved to be the most efficient of the solvers studied.  
 Newton's method with the coarse $k$ finite difference yielded just as 
 few $k$ evaluations but with a slightly higher overall cost.
 
 \begin{table*}[ht] 
  \begin{center} 
- 
+ \caption{Outer solver comparison for 3-D Takeda problem with second order 
+          spatial expansion and third order polar and azimuthal angle 
+          expansions.} 
+ \label{tbl:takeda_outer_study} 
   \begin{threeparttable}
  \begin{tabular}{ccccccc} 
  \toprule 
@@ -1505,10 +1528,6 @@ few $k$ evaluations but with a slightly higher overall cost.
  \end{threeparttable}
  
  \end{center} 
- \caption{Outer solver comparison for 3-D Takeda problem with second order 
-          spatial expansion and third order polar and azimuthal angle 
-          expansions.} 
- \label{tbl:takeda_outer_study} 
 \end{table*} 
 
 \section{Conclusion}
@@ -1516,32 +1535,32 @@ few $k$ evaluations but with a slightly higher overall cost.
 
 Based on the results for both the diffusion and transport problems, Picard 
 iteration with exponential extrapolation appears to be the most
-efficient of the methods, yielding minimum numbers of $k$ evaluations 
-while providing the lowest global solver overhead.  However, the 
+efficient method studied, yielding minimum numbers of $k$ evaluations 
+while providing the lowest global solver overhead.  However,  
 extrapolation is based on $\lambda$ converging to unity, and because this 
 is not always guaranteed, Newton's method with the coarse finite difference 
 provides a more consistently robust solver, with nearly as 
 few $k$ evaluations and only relatively small overhead due to the 
 inner linear solves.
 
-It is anticipated further work on preconditioners for Newton's method 
-would put the corresponding (global) computation time more in line with 
-that of the extrapolated Picard iteration.  Even so, the efficacy and 
-simplicity of the Picard iteration suggests that care should be taken to 
+Further work on preconditioners for Newton's method 
+will likely reduce the corresponding (global) computation time 
+to levels similar to extrapolated Picard iteration.  
+Even so, the efficacy and 
+simplicity of Picard iteration suggests that care should be taken to 
 select a conservative basis leading to $\lambda = 1$ upon convergence.
 
-Ultimately, the goal is to use ERMM in production level analyses, 
-and to get there, significant challenges remain.  Chief among these 
-remains the shear number of responses required for realistic 
-modeling.  The solvers studied that reduce the number of $k$ evaluations 
-required go a long way to minimize the time spent generating  
-responses, while  
-related recent work successfully developed diffusion-based 
+Ultimately, the present work supports broader efforts to use 
+ERMM for production level analyses, but significant challenges remain,
+dominated by the vast number of responses required for realistic 
+modeling.  Solvers were developed that reduce the number of $k$ evaluations 
+required and minimize time spent generating  
+responses, while related recent work successfully developed diffusion-based 
 transport preconditioners that significantly reduce the time of 
 individual response calculations \cite{roberts2014dpm}.  Because 
-responses are independent, parallel computation will be a natural 
+responses are independent, parallel computation will be a natural
 component of 
 any future ERMM implementation.  Scoping studies have demonstrated 
-good scaling of {\tt Serment} on a small research 
+nearly ideal scaling of {\tt Serment} on a small research 
 cluster \cite{roberts2014arm}, and ongoing work aims to test {\tt Serment} on 
 leadership-class machines.
