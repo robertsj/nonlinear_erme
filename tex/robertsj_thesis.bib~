@@ -16,12 +16,12 @@
 @ARTICLE{shimizu1963rmm,
   author = {Shimizu, A.},
   title = {{Response Matrix Method}},
-  journal = {Journal of Nuclear Science and Technology},
+  journal = {Journal of the Atomic Energy Society of Japan},
   year = {1963},
   volume = {5},
   keywords = {response matrix},
   owner = {bert},
-  pages = {1--10},
+  pages = {259--368},
   publisher = {NAIG Nuclear Research LAb., Japan},
   timestamp = {2011.02.20}
 }
@@ -30,12 +30,12 @@
   author = {Shimizu, A. and Monta, K. and Miyamoto, T.},
   title = {{Application of the Response Matrix Method to Criticality Calculations
         of One-Dimensional Reactors}},
-  journal = {Journal of Nuclear Science and Technology},
+  journal = {Journal of the Atomic Energy Society of Japan},
   year = {1963},
   volume = {5},
   keywords = {response matrix},
   owner = {bert},
-  pages = {11--17},
+  pages = {369--376},
   publisher = {NAIG Nuclear Research LAb., Japan},
   timestamp = {2011.02.20}
 }
@@ -249,18 +249,19 @@
   timestamp = {2009.12.02}
 }
 
-@ARTICLE{lindahl1981rrm,
-  author = {Lindahl, S-{\"O}. and Weiss, F.},
-  title = {{The Response Matrix Method}},
-  journal = {Advances in Nuclear Science and Technology},
-  year = {1981},
+
+
+@incollection{lindahl1981rrm,
+  title={{The Response Matrix Method}},
+  author={Lindahl, S-{\"O}. and Weiss, F.},
+  booktitle={Advances in Nuclear Science and Technology},
   volume = {13},
-  annote = {ANNOTE: This paper provides probably the only real "survey" of the
-        RMM. The method is described quite formally, and it is is presented
-        using diffusion theory to illustrate. },
-  keywords = {response matrix},
-  publisher = {ASEA-ATOM, Vasteras}
+  pages={73--154},
+  year={1981},
+  publisher={Springer}
 }
+
+
 
 @book{duderstadt1976nra,
   title       = {{Nuclear Reactor Analysis}},
@@ -795,9 +796,7 @@ G. Schulz, Iterative Berechnung der Reziproken matrix, Z. Angew. Math. Mech. 13
 @TECHREPORT{anl1977benchmark,
   title = {{Argonne Code Center: Benchmark Problem Book}},
   number = {ANL-7416 Supplement 2},
-  year =  {1977},
-  author = {Argonne Code Center: Benchmark Problem Book. Technical Report ANL-7416
-        Supplement 2, Argonne National Laboratory, 1977.}
+  year =  {1977}
 }
 
 @mastersthesis{smith1979anm,
