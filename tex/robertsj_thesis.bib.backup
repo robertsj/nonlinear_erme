@@ -16,12 +16,12 @@
 @ARTICLE{shimizu1963rmm,
   author = {Shimizu, A.},
   title = {{Response Matrix Method}},
-  journal = {Journal of Nuclear Science and Technology},
+  journal = {Journal of the Atomic Energy Society of Japan},
   year = {1963},
   volume = {5},
   keywords = {response matrix},
   owner = {bert},
-  pages = {1--10},
+  pages = {359--368},
   publisher = {NAIG Nuclear Research LAb., Japan},
   timestamp = {2011.02.20}
 }
@@ -30,12 +30,12 @@
   author = {Shimizu, A. and Monta, K. and Miyamoto, T.},
   title = {{Application of the Response Matrix Method to Criticality Calculations
         of One-Dimensional Reactors}},
-  journal = {Journal of Nuclear Science and Technology},
+  journal = {Journal of the Atomic Energy Society of Japan},
   year = {1963},
   volume = {5},
   keywords = {response matrix},
   owner = {bert},
-  pages = {11--17},
+  pages = {369--376},
   publisher = {NAIG Nuclear Research LAb., Japan},
   timestamp = {2011.02.20}
 }
@@ -70,6 +70,14 @@
   title = {{Multi-Dimensional Response Matrix Method}},
   year = {1976},
   school = {Kansas State University},
+  keywords = {response matrix}
+}
+
+@PHDTHESIS{roberts2014arm,
+  author = {Roberts, J. A.},
+  title = {{Advanced Response Matrix Methods for Full Core Analysis}},
+  year = {2014},
+  school = {Massachusetts Institute of Technology},
   keywords = {response matrix}
 }
 
@@ -150,6 +158,17 @@
   timestamp = {2009.12.02}
 }
 
+
+@INPROCEEDINGS{roberts2014psb,
+  author = {Roberts, J. A. and Forget, B.},
+  title = {{Phase Space Basis Functions for Response Matrix Methods}},
+  booktitle = {Submitted for Inclusion in the Proceedings of the 
+               International Conference on the Physics 
+               of Reactors (PHYSOR 2014)},
+  year = {2014}
+}
+
+
 @inproceedings{ferrer2012lsa,
   title={{Linear source approximation in CASMO5}},
   author={Ferrer, R. and Rhodes, J. and Smith, K.},
@@ -185,6 +204,17 @@
   publisher = {Elsevier}
 }
 
+
+
+@ARTICLE{roberts2014dpm,
+  author = {Roberts, J. A. and Forget, B.},
+  title = {{Multigroup Diffusion Preconditioners for Multiplying 
+            Fixed Source Transport Problems}},
+  journal = {Submitted to Journal of Computational Physics},
+  year = {2013}
+}
+
+
 @INPROCEEDINGS{roberts2011ser,
   author = {Roberts, J. A. and Forget, B.},
   title = {{Solving Eigenvalue Response Matrix Equations using Jacobian-Free
@@ -219,18 +249,19 @@
   timestamp = {2009.12.02}
 }
 
-@ARTICLE{lindahl1981rrm,
-  author = {Lindahl, S-{\"O}. and Weiss, F.},
-  title = {{The Response Matrix Method}},
-  journal = {Advances in Nuclear Science and Technology},
-  year = {1981},
+
+
+@incollection{lindahl1981rrm,
+  title={{The Response Matrix Method}},
+  author={Lindahl, S-{\"O}. and Weiss, F.},
+  booktitle={Advances in Nuclear Science and Technology},
   volume = {13},
-  annote = {ANNOTE: This paper provides probably the only real "survey" of the
-        RMM. The method is described quite formally, and it is is presented
-        using diffusion theory to illustrate. },
-  keywords = {response matrix},
-  publisher = {ASEA-ATOM, Vasteras}
+  pages={73--154},
+  year={1981},
+  publisher={Springer}
 }
+
+
 
 @book{duderstadt1976nra,
   title       = {{Nuclear Reactor Analysis}},
@@ -763,8 +794,9 @@ G. Schulz, Iterative Berechnung der Reziproken matrix, Z. Angew. Math. Mech. 13
 
 
 @TECHREPORT{anl1977benchmark,
-  author = {Argonne Code Center: Benchmark Problem Book. Technical Report ANL-7416
-        Supplement 2, Argonne National Laboratory, 1977.}
+  title = {{Argonne Code Center: Benchmark Problem Book}},
+  number = {ANL-7416 Supplement 2},
+  year =  {1977}
 }
 
 @mastersthesis{smith1979anm,
@@ -830,16 +862,6 @@ rinciple.}
 }
 
 
-@Article{petsc,
-   author  = {Someone},
-   title   = {{{PETSc}: A Scalable and Flexible Toolkit for the Solution of Eigenvalue Problems}},
-   journal = {ACM Transactions on Mathematical Software},
-   volume  = {31},
-   number  = "3",
-   pages   = "351--362",
-   month   = sep,
-   year    = "2005"
-}
 
 @Article{slepc,
    author  = {Vicente Hernandez and Jose E. Roman and Vicente Vidal},
@@ -854,7 +876,7 @@ rinciple.}
 
 @TechReport{slepc-str-4,
    author  = "V. Hernandez and J. E. Roman and A. Tomas and V. Vidal",
-   title   = "Arnoldi Methods in SLEPc",
+   title   = {{Arnoldi Methods in SLEPc}},
    number  = "STR-4",
    institution = "Universidad Polit\'ecnica de Valencia",
    note    = "Available at http://www.grycap.upv.es/slepc",
@@ -863,7 +885,7 @@ rinciple.}
 
 @TechReport{slepc-str-7,
    author  = "V. Hernandez and J. E. Roman and A. Tomas and V. Vidal",
-   title   = "Krylov-Schur Methods in SLEPc",
+   title   = {{Krylov-Schur Methods in SLEPc}},
    number  = "STR-7",
    institution = "Universidad Polit\'ecnica de Valencia",
    note    = "Available at http://www.grycap.upv.es/slepc",
@@ -996,15 +1018,16 @@ rinciple.}
   publisher={Taylor \& Francis}
 }
 
-@InProceedings{petsc-efficient,
+@InProceedings{petsc,
             Author = "Satish Balay and William D. Gropp and Lois Curfman McInnes and Barry F.  Smith",
-            Title = "Efficient Management of Parallelism in Object Oriented Numerical Software Libraries",
+            Title = {{Efficient Management of Parallelism in Object Oriented Numerical Software Libraries}},
             Booktitle = "Modern Software Tools in Scientific Computing",
             Editor = "E. Arge and A. M. Bruaset and H. P. Langtangen",
             Pages = "163--202",
             Publisher = "Birkh{\"{a}}user Press",
             Year = "1997"
 }
+
 
 @article{carew1999upw,
   title={{Uniform Positive-Weight Quadratures for Discrete Ordinate Transport Calculations}},
@@ -1086,25 +1109,21 @@ rinciple.}
 
 @article{romano2013ddm,
 title = "Data decomposition of Monte Carlo particle transport simulations via tally servers ",
-
 journal = "Journal of Computational Physics ",
-
 volume = "252",
-
 number = "0",
-
 pages = "20 - 36",
-
 year = "2013",
-
 note = "",
-
 issn = "0021-9991",
-
 doi = "http://dx.doi.org/10.1016/j.jcp.2013.06.011",
-
 url = "http://www.sciencedirect.com/science/article/pii/S002199911300435X",
-
 author = "Paul K. Romano and Andrew R. Siegel and Benoit Forget and Kord Smith",
 }
 
+@ARTICLE{roberts2014cer,
+  author = {Roberts, J. A. and Everson, M. and Forget, B.},
+  title = {{On the Convergence of the Eigenvalue Response Matrix Method}},
+  journal = {Submitted to the Journal of Applied Mathematics},
+  year = {2013}
+}

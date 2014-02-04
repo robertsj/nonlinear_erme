@@ -52,7 +52,7 @@ on expansions of the boundary conditions that couple
 subvolumes of the global problem, a formalism introduced 
 as early as the work of Lindahl \cite{lindahl1976mdr} and
 studied more recently by several authors
-\cite{mosher2006ifr, roberts2011ser, roberts2012ksi}.
+\cite{mosher2006ifr, roberts2011ser, roberts2012ksi}.  
 
 Suppose the global problem 
 of Eq. \ref{eq:global} is defined over a 
@@ -81,8 +81,8 @@ over the relevant phase space is defined
 \end{equation}
 subject to
 \begin{equation}
-   \int P_m(\vec{\rho}_{is}) P_n(\vec{\rho}_{is}) 
-     = \delta_{mn} d\rho_{is} \, .
+   \int P_m(\vec{\rho}_{is}) P_n(\vec{\rho}_{is})  d\rho_{is}
+     = \delta_{mn} \, .
 \end{equation}
 A response equation is defined 
 \begin{equation}
@@ -96,8 +96,8 @@ subject to
 The resulting outgoing currents $J_{-} (\vec{\rho}_{is}) $ are used to define
 response functions
 \begin{equation}
-       r^{ms}_{im's'} = \int  P_n(\vec{\rho}_{is})  
-        J_{i+}^{m} (\vec{\rho}_{is'}) d\rho_{is} \, .
+       r^{ms}_{im's'} = \int  P_{m'}(\vec{\rho}_{is'})  
+        J_{i+}^{m} (\vec{\rho}_{is'}) d\rho_{is'} \, .
 \label{eq:responsefunction}
 \end{equation}
 The quantity $r^{ms}_{im's'}$ has a simple physical
@@ -108,7 +108,7 @@ surface $s$ of subvolume $i$.
 The incident and outgoing currents are expressed as
 truncated expansions using the same basis
 \begin{equation}
-  J_{is\pm}(\vec{\rho}_{it}) \approx \sum^{N}_{n=0}  
+  J_{is\pm}(\vec{\rho}_{is}) \approx \sum^{N}_{n=0}  
     j^n_{is_\pm} P_n (\vec{\rho}_{is}) 
 \end{equation}
 where
@@ -157,7 +157,9 @@ $\mathbf{J}_{-}$ are vectors containing all incident current coefficients,
 $\oper{M}=\oper{M}^\mathsf{T}$ is 
 the connectivity matrix that redirects outgoing responses as incident
 responses of neighbors, superscript $\mathsf{T}$ represents the matrix 
-transpose, and $\lambda$ is the current eigenvalue.  
+transpose, and $\lambda$ is an eigenvalue that
+represents the global balance of neutron currents through all 
+nodal surfaces.
 If the response matrix $\oper{R}$ is conservative (i.e. it
 strictly maintains neutron balance),
 \begin{equation}
@@ -170,10 +172,25 @@ may be used to evaluate accuracy of the expansions used (with
 respect to an infinite expansion).
 
 
+The $k$-eigenvalue can be interpreted physically as the ratio of neutrons
+produced in one generation to the previous generation. 
+Alternatively, $k$ can be viewed as the ratio of gains to losses in a given 
+generation, and when applying this interpretation to the response matrix 
+formalism, $k$ can be updated via the process
+\begin{equation}
+  k_{n+1} = \frac{\mathbf{F}(k_{n})\mathbf{J}_{-}} 
+  { \mathbf{A}(k_{n}) \mathbf{J}_{-} + \mathbf{L}(k_{n}) \mathbf{J}_{-} }\, ,
+\label{eq:picard}
+\end{equation}
+where $\oper{F}(k)\mathbf{J}_{-}$ is the global fission rate, 
+$\oper{A}(k) \mathbf{J}_{-}$ is the global absorption rate,
+and $\oper{L}(k) \mathbf{J}_{-}$ is the total leakage rate
+from global boundaries.
+
 %===========================================================================%
 \subsection{Survey of ERMM Implementations}
 
-The method defined by Eqs. \ref{eq:local}-\ref{eq:elementresponse}
+The method defined by Eqs. \ref{eq:local}-\ref{eq:picard}
 originates from the work of Shimizu et al. 
 \cite{shimizu1963rmm, shimizu1963arm}, which appears to be the first work 
 on response matrix methods (although the authors acknowledged a 
@@ -183,17 +200,20 @@ theory of invariant imbedding as developed by Bellman et al.
 in slab geometry. Aoki and Shimizu extended the approach to two dimensions, 
 using a linear approximation in space to represent boundary
 currents \cite{aoki1965arm}.
-A fundamental shortcoming of this early work is what seems to
-be an assumed value (unity) of the $k$-eigenvalue when evaluating responses.
+A shortcoming of this early work was an assumed value (unity) of 
+the $k$-eigenvalue when evaluating responses, following which 
+Eqs. \ref{eq:erme} and \ref{eq:picard} were solved just once 
+to compute $k$.
 Typically $k \approx 1$ for nuclear reactors, so the errors observed 
 were only tens of pcm, which may have been deceptively small
-and not representative of more general cases.
+and not representative of more general cases.  
 In the later 2-D analysis \cite{aoki1965arm}, the results compared 
 favorably to fine mesh diffusion calculations.
 
 Weiss and Lindahl generalized ERMM by considering arbitrarily 
 high order expansions of the boundary currents in Legendre 
-polynomials \cite{weiss1975hor}, while also accounting for $k$ explicitly.
+polynomials \cite{weiss1975hor} and introducing an 
+iterative sceheme for the $k$-eigenvalue equivalent to Eq. \ref{eq:picard}.
 Lindahl also studied expansions of the current, comparing Legendre 
 expansions to an approach that divides the boundary in several segments 
 in which the current is assumed flat \cite{lindahl1976mdr}.  A more
@@ -277,7 +297,7 @@ volume-dependent responses but would preclude their use in
 solving Eq. \ref{eq:erme}.
 
 Other related work has been development of the incident
-flux expansion method \cite{ilas2003hcm,mosher2006ifr}. 
+flux expansion method \cite{mosher2006ifr,ilas2003hcm}. 
 Initial work by Ilas and Rahnema focused on a variational
 approach using a basis of Green's functions
 for each variable with one-dimensional discrete 
@@ -342,7 +362,9 @@ architectures.
 % to be the response functions.  If these are computed on-the-fly (that is, 
 % for each new $k$), a method that minimizes the number of $k$ evaluations is
 % highly desirable.
-Several solvers that support this goal are developed in this paper, 
+Several solvers that support this goal are developed in this paper,
+which substantially extends and elaborates on the authors' 
+previous work \cite{roberts2011ser, roberts2012ksi}, and
 the remainder of which is organized as follows.
  Section \ref{sec:inner}
 discusses solution of the response matrix equations via fixed point 
@@ -352,28 +374,14 @@ that provide faster convergence in $k$ than standard fixed-point iteration,
 which is important because the number of $k$-evaluations defines the 
 number of responses evaluated.  A numerical study 
 of the methods applied to several benchmark problems is 
-provided in Section \ref{sec:results}, followed by concluding remarks in
-Section \ref{sec:conclusion}.
+provided in Section~\ref{sec:results}, followed by concluding remarks in
+Section~\ref{sec:conclusion}.
 
 
 %----------------------------------------------------------------------------%
 \section{Solving the $\lambda$-Eigenvalue Problem}
 \label{sec:inner}
 
-The $k$-eigenvalue can be interpreted physically as the ratio of neutrons
-produced in one generation to the previous generation. 
-Alternatively, $k$ can be viewed as the ratio of gains to losses in a given 
-generation, and when applying this interpretation to the response matrix 
-formalism, $k$ can be updated via the process
-\begin{equation}
- f(k) = k_{n+1} = \frac{\mathbf{F}(k_{n})\mathbf{J}_{-}} 
-  { \mathbf{A}(k_{n}) \mathbf{J}_{-} + \mathbf{L}(k_{n}) \mathbf{J}_{-} }\, ,
-\label{eq:picard}
-\end{equation}
-where $\oper{F}(k)\mathbf{J}_{-}$ is the global fission rate, 
-$\oper{A}(k) \mathbf{J}_{-}$ is the global absorption rate,
-and $\oper{L}(k) \mathbf{J}_{-}$ is the total leakage rate
-from global boundaries.
 
 Equations \ref{eq:erme} and \ref{eq:picard} represent
 a Picard (fixed point) iteration
@@ -484,7 +492,7 @@ algorithms \cite{slepc}.
 \label{sec:outer}
 
 The convergence properties of the fixed-point iteration
-are generally favorable \cite{roberts2014cer}, but in many cases,
+are generally favorable \cite{roberts2014arm}, but in many cases,
 faster convergence in $k$ is desirable.  Because responses 
 must be recomputed for each new value of $k$,  methods that 
 minimize the number of unique $k$ values are critical for 
@@ -503,7 +511,7 @@ fixed point iteration is required.
 \subsubsection{Regula Falsi and Related Methods}
 \label{sec:extrapolationmethods}
 
-The current eigenvalue, $\lambda$, approaches an 
+The $\lambda$-eigenvalue approaches an 
 asymptotic value $\lambda^* \approx 1$ in the 
 limit $k\to k^*$.  For conservative responses with negligible 
 iteration error, $\lambda^*$ is {\it exactly} unity.  
@@ -533,7 +541,7 @@ exponential relation
 \end{equation}
 Because response functions tend to have exponential dependence on 
 $k$, the authors assumed a similar dependence would also hold true for 
-the current eigenvalue. 
+the $\lambda$-eigenvalue. 
 
 A more recent study by Forget and Rahnema \cite{forget2005nee} 
 rediscovered the relationship
@@ -1564,3 +1572,11 @@ any future ERMM implementation.  Scoping studies have demonstrated
 nearly ideal scaling of {\tt Serment} on a small research 
 cluster \cite{roberts2014arm}, and ongoing work aims to test {\tt Serment} on 
 leadership-class machines.
+
+\section*{Acknowledgements}
+
+The work of the first author was supported in part by a
+Department of Energy Nuclear Energy University Programs Graduate Fellowship.
+Additionally, the authors wish to thank one of the reviewers
+for comments that helped clarify aspects of the early response 
+matrix literature.
