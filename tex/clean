@@ -1,1 +1,1 @@
-rm *aux *bbl *blg *out  *log *tex~ *spl *.tex.backup
+rm *aux *bbl *blg *out  *log *tex~ *spl *.tex.backup *bib~

@@ -551,7 +551,7 @@ Moving from a $k$-update via balance, they assumed the relation
 $k \propto 1/\lambda$ and observed good convergence without 
 needing to compute the gain and loss operators needed for balance.  
 In theory, the relationship $k \propto 1/\lambda$ is expected.  
-Previous work \cite{roberts2014cer} used one group diffusion 
+Previous work \cite{roberts2014arm} used one group diffusion 
 theory to show that 
 \begin{equation}
  \frac{d \lambda}{d B} \propto  B \, 
@@ -1320,7 +1320,7 @@ is warranted.
 \begin{center} 
 
  \caption{2-D C5G7 order convergence.  All errors in \%, with 
-          reference results from \Detran on same mesh.} 
+          reference MCNP results from the original documentation.} 
  \label{tbl:c5g7_order_convergence} 
 
   \begin{threeparttable}
@@ -1330,22 +1330,37 @@ is warranted.
    & $\frac{\sum_i |e_i|}{ N}$   &  $\frac{\sqrt{\sum_{i} e_{i}^2}}{N}$   
      & $ \frac{\sum_i |e_i|p^{\text{ref}}_i}{N} \bar{p}^{\text{ref}}$    \\
  \midrule 
-DLP-$\psi$ &    0  &     1.00   &    33.35   &   108.87   &     9.49   &     0.36   &    11.11   \\
-DLP-$\psi$  &    1  &     0.72   &    37.78   &    18.52   &     2.63   &     0.12   &     3.07   \\
-DLP-$\psi$  &    2  &     0.13   &     4.67   &     7.74   &     0.92   &     0.04   &     1.25   \\
-DLP-$\psi$  &    3  &     0.01   &     2.35   &     6.24   &     0.35   &     0.02   &     0.37   \\
+ DLP-$\psi$  &    0  &     1.00   &    33.32   &   109.45   &     9.41   &     0.36   &    10.97   \\
+ DLP-$\psi$  &    1  &     0.72   &    38.17   &    18.49   &     2.65   &     0.12   &     3.06   \\
+ DLP-$\psi$  &    2  &     0.13   &     4.36   &     7.49   &     0.98   &     0.04   &     1.36   \\
+ DLP-$\psi$  &    3  &     0.01   &     2.20   &     5.81   &     0.37   &     0.02   &     0.42   \\
  \midrule 
-Chebyshev-$\psi$ &    0  &     2.61   &    40.73   &   107.01   &     9.57   &     0.37   &    11.03   \\
-Chebyshev-$\psi$ &    1  &     0.07   &    19.54   &    11.09   &     1.01   &     0.06   &     1.26   \\
-Chebyshev-$\psi$ &    2  &     0.04   &     2.95   &     6.70   &     0.39   &     0.02   &     0.37   \\
-Chebyshev-$\psi$ &    3  &     0.04   &     2.42   &     6.43   &     0.35   &     0.02   &     0.35   \\
+ Chebyshev-$\psi$  &    0  &     2.61   &    40.43   &   107.58   &     9.46   &     0.37   &    10.86   \\
+ Chebyshev-$\psi$  &    1  &     0.07   &    19.93   &    11.38   &     0.99   &     0.05   &     1.22   \\
+ Chebyshev-$\psi$  &    2  &     0.04   &     2.73   &     6.28   &     0.39   &     0.02   &     0.40   \\
+ Chebyshev-$\psi$  &    3  &     0.04   &     2.27   &     6.00   &     0.35   &     0.02   &     0.38   \\
+ \midrule 
+ {\tt Detran}\tnote{c} & n/a  &     0.01   &     0.91   &     0.94   &     0.17   &     0.01   &     0.22   \\
+
+% detran as reference
+% DLP-$\psi$ &    0  &     1.00   &    33.35   &   108.87   &     9.49   &     0.36   &    11.11   \\
+% DLP-$\psi$  &    1  &     0.72   &    37.78   &    18.52   &     2.63   &     0.12   &     3.07   \\
+% DLP-$\psi$  &    2  &     0.13   &     4.67   &     7.74   &     0.92   &     0.04   &     1.25   \\
+% DLP-$\psi$  &    3  &     0.01   &     2.35   &     6.24   &     0.35   &     0.02   &     0.37   \\
+%  \midrule 
+% Chebyshev-$\psi$ &    0  &     2.61   &    40.73   &   107.01   &     9.57   &     0.37   &    11.03   \\
+% Chebyshev-$\psi$ &    1  &     0.07   &    19.54   &    11.09   &     1.01   &     0.06   &     1.26   \\
+% Chebyshev-$\psi$ &    2  &     0.04   &     2.95   &     6.70   &     0.39   &     0.02   &     0.37   \\
+% Chebyshev-$\psi$ &    3  &     0.04   &     2.42   &     6.43   &     0.35   &     0.02   &     0.35   \\
  \bottomrule 
- \end{tabular} 
- 
+ \end{tabular}  
  {\footnotesize
  \begin{tablenotes}
    \item[a] $e_k = |k-k^{\text{ref}}|/k^{\text{ref}}$  
    \item[b] $e_i = p_i - p^{\text{ref}}_i$, for $i$th pin
+   \item[c] based on {\tt Detran} solution of the C5G7 problem with the same
+            discretization and quadrature and, thus, represents the lower error 
+            bound for {\tt Serment} 
  \end{tablenotes}
  }
  
